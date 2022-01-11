@@ -21,7 +21,7 @@ const Product = db.define("product", {
       isUrl: true,
     },
     defaultValue:
-      "https://cdn2.vectorstock.com/i/1000x1000/30/61/plant-pot-cartoon-isolated-vector-24833061.jpg",
+      "https://png.pngtree.com/png-vector/20190130/ourlarge/pngtree-hand-drawn-noise-illustration-green-potted-plant-green-leaf-design-element-png-image_609728.jpg",
   },
 });
 
