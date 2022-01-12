@@ -2,7 +2,7 @@
 
 const {
   db,
-  models: { User, Product },
+  models: { User, Product, Order, Order_Product },
 } = require("../server/db");
 
 /**
@@ -23,13 +23,50 @@ async function seed() {
     User.create({ username: "ryan", password: "ryan" }),
   ]);
 
-  /// Creating Products
+  // Creating Products
+  const products = [];
   for (let i = 0; i < 25; i++) {
-    await Product.create({
+    let product = await Product.create({
       name: `Plant${i}`,
       price: i,
     });
+    products.push(product);
   }
+
+  // Create Orders for Users, add Products to Orders
+
+  // Baseline -- few items, single item added x2
+  const tylerUser = await User.findOne({where: {username: 'tyler'}})
+  const tylerOrder = await tylerUser.createOrder({})
+  await tylerOrder.addProduct(products[0])
+  await tylerOrder.addProduct(products[1])
+  // Many items
+  const elstanUser = await User.findOne({where: {username: 'elstan'}})
+  const elstanOrder = await elstanUser.createOrder({})
+  await elstanOrder.addProduct(products[23])
+  await elstanOrder.addProduct(products[22])
+  await elstanOrder.addProduct(products[16])
+  await elstanOrder.addProduct(products[15])
+  await elstanOrder.addProduct(products[9])
+  await elstanOrder.addProduct(products[8])
+  await elstanOrder.addProduct(products[3])
+  await elstanOrder.addProduct(products[1])
+  // Single item, added with qty >> 1 and checkoutPrice
+  const alstonUser = await User.findOne({where: {username: 'alston'}})
+  const alstonOrder = await alstonUser.createOrder({})
+  await alstonOrder.addProduct(products[7], { through: {quantity: 6, checkoutPrice: products[7].price}})
+  // No items
+  const ryanUser = await User.findOne({where: {username: 'ryan'}})
+  const ryanOrder = await ryanUser.createOrder({})
+  // User with complete order and active order
+  const murphyUser = await User.findOne({where: {username: 'murphy'}})
+  const murphyOrder = await murphyUser.createOrder({status: 'complete'})
+  await murphyOrder.addProduct(products[0])
+  await murphyOrder.addProduct(products[1])
+  const murphyOrder2 = await murphyUser.createOrder()
+  await murphyOrder2.addProduct(products[3])
+  await murphyOrder2.addProduct(products[5])
+
 
   console.log(`seeded ${users.length} users`);
   console.log(`seeded successfully`);
