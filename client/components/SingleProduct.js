@@ -18,7 +18,7 @@ export default function () {
       <img src={singleProduct.imageUrl} style={{ maxWidth: "25rem" }} />
       <p> {singleProduct.name}</p>
       <p> {singleProduct.description}</p>
-      <p> {singleProduct.price}</p>
+      <p> ${(singleProduct.price)/100}</p>
       <button
         type="button"
         onClick={() => {

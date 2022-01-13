@@ -23,6 +23,10 @@ const Product = db.define("product", {
     defaultValue:
       "https://png.pngtree.com/png-vector/20190130/ourlarge/pngtree-hand-drawn-noise-illustration-green-potted-plant-green-leaf-design-element-png-image_609728.jpg",
   },
+  type: {
+    type: Sequelize.ENUM("plant", "pot", "tool", "apparel"),
+    defaultValue: "plant"
+  }
 });
 
 module.exports = Product;
