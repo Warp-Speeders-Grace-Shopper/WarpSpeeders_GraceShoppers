@@ -4,6 +4,7 @@ const {
   db,
   models: { User, Product, Order, Order_Product },
 } = require("../server/db");
+const { red, green } = require("chalk");
 
 /**
  * seed - this function clears the database, updates tables to
@@ -36,40 +37,45 @@ async function seed() {
   // Create Orders for Users, add Products to Orders
 
   // Baseline -- few items, single item added x2
-  const tylerUser = await User.findOne({where: {username: 'tyler'}})
-  const tylerOrder = await tylerUser.createOrder({})
-  await tylerOrder.addProduct(products[0])
-  await tylerOrder.addProduct(products[1])
+  const tylerUser = await User.findOne({ where: { username: "tyler" } });
+  const tylerOrder = await tylerUser.createOrder({});
+  const tylerOrderTwo = await tylerUser.createOrder({ status: "complete" });
+  const tylerOrderThree = await tylerUser.createOrder({});
+  await tylerOrder.addProduct(products[0]);
+  await tylerOrder.addProduct(products[1]);
   // Many items
-  const elstanUser = await User.findOne({where: {username: 'elstan'}})
-  const elstanOrder = await elstanUser.createOrder({})
-  await elstanOrder.addProduct(products[23])
-  await elstanOrder.addProduct(products[22])
-  await elstanOrder.addProduct(products[16])
-  await elstanOrder.addProduct(products[15])
-  await elstanOrder.addProduct(products[9])
-  await elstanOrder.addProduct(products[8])
-  await elstanOrder.addProduct(products[3])
-  await elstanOrder.addProduct(products[1])
+  const elstanUser = await User.findOne({ where: { username: "elstan" } });
+  const elstanOrder = await elstanUser.createOrder({});
+  await elstanOrder.addProduct(products[23]);
+  await elstanOrder.addProduct(products[22]);
+  await elstanOrder.addProduct(products[16]);
+  await elstanOrder.addProduct(products[15]);
+  await elstanOrder.addProduct(products[9]);
+  await elstanOrder.addProduct(products[8]);
+  await elstanOrder.addProduct(products[3]);
+  await elstanOrder.addProduct(products[1]);
   // Single item, added with qty >> 1 and checkoutPrice
-  const alstonUser = await User.findOne({where: {username: 'alston'}})
-  const alstonOrder = await alstonUser.createOrder({})
-  await alstonOrder.addProduct(products[7], { through: {quantity: 6, checkoutPrice: products[7].price}})
+  const alstonUser = await User.findOne({ where: { username: "alston" } });
+  const alstonOrder = await alstonUser.createOrder({});
+  await alstonOrder.addProduct(products[7], {
+    through: { quantity: 6, checkoutPrice: products[7].price },
+  });
   // No items
-  const ryanUser = await User.findOne({where: {username: 'ryan'}})
-  const ryanOrder = await ryanUser.createOrder({})
+  const ryanUser = await User.findOne({ where: { username: "ryan" } });
+  const ryanOrder = await ryanUser.createOrder({});
   // User with complete order and active order
-  const murphyUser = await User.findOne({where: {username: 'murphy'}})
-  const murphyOrder = await murphyUser.createOrder({status: 'complete'})
-  await murphyOrder.addProduct(products[0])
-  await murphyOrder.addProduct(products[1])
-  const murphyOrder2 = await murphyUser.createOrder()
-  await murphyOrder2.addProduct(products[3])
-  await murphyOrder2.addProduct(products[5])
+  const murphyUser = await User.findOne({ where: { username: "murphy" } });
+  const murphyOrder = await murphyUser.createOrder({ status: "complete" });
+  await murphyOrder.addProduct(products[0]);
+  await murphyOrder.addProduct(products[1]);
+  const murphyOrder2 = await murphyUser.createOrder();
+  await murphyOrder2.addProduct(products[3]);
+  await murphyOrder2.addProduct(products[5]);
 
-
-  console.log(`seeded ${users.length} users`);
-  console.log(`seeded successfully`);
+  console.log(
+    `seeded ${users.length} users\nseeded ${products.length} products`
+  );
+  console.log(green(`seeded successfully`));
   return {
     users: {
       cody: users[0],
@@ -88,7 +94,7 @@ async function runSeed() {
   try {
     await seed();
   } catch (err) {
-    console.error(err);
+    console.error(red(err));
     process.exitCode = 1;
   } finally {
     console.log("closing db connection");
