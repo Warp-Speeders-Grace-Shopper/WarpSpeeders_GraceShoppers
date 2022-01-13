@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { getCart } from '../store/cart';
+import { clearCart, getCart } from '../store/cart';
 import { useDispatch, useSelector } from 'react-redux';
 
 const CartView = () => {
@@ -13,6 +13,15 @@ const CartView = () => {
   // when the page loads (and whenever user login changes), dispatch getCart
   const cart = useSelector((state) => state.cart);
   // put that cart in local scope
+
+  function handleRemove(cartItem) {
+    console.dir(cartItem);
+  }
+
+  function handleClearCart() {
+    console.log(`clear cart pushed`);
+    dispatch(clearCart());
+  }
 
   return (
     <div>
@@ -103,13 +112,5 @@ const CartView = () => {
     </div>
   );
 };
-
-function handleRemove(cartItem) {
-  console.dir(cartItem);
-}
-
-function handleClearCart() {
-  console.log(`clear cart pushed`);
-}
 
 export default CartView;

@@ -3,10 +3,15 @@ import axios from 'axios';
 // action type constant(s):
 const GET_CART = 'GET_CART';
 const ADD_TO_CART = 'ADD_TO_CART';
+const CLEAR_CART = 'CLEAR_CART';
 
 // action creator(s):
 const _getCart = (cart) => {
   return { type: GET_CART, cart };
+};
+
+const _clearCart = () => {
+  return { type: CLEAR_CART };
 };
 
 const _addToCart = (product) => {
@@ -53,6 +58,11 @@ export const addToCart = (productId, userId) => async (dispatch) => {
   }
 };
 
+export const clearCart = () => async (dispatch) => {
+  console.log(`clearCart thunk reached`);
+  dispatch(_clearCart());
+};
+
 // Reducer
 export default function cart(state = [], action) {
   switch (action.type) {
@@ -60,6 +70,8 @@ export default function cart(state = [], action) {
       return action.cart;
     case ADD_TO_CART:
       return [...state, action.product];
+    case CLEAR_CART:
+      return [];
     default:
       return state;
   }
