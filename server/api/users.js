@@ -65,14 +65,16 @@ router.get('/:userId/cart', async (req, res, next) => {
 router.post('/:userId/addToCart', async (req, res, next) => {
   try {
     const { productId, quantity = 1 } = req.body;
-    // console.log(red(`grabbed productId of ${productId}`));
+    console.log(
+      red(`grabbed productId of ${productId}, quantity of ${quantity}`)
+    );
     //grab productId and quantity from the request body. this is extensible to handle additional options
 
-    const currentUserOrder = await Order.findOne({
+    const currentUserOrder = await Order.findOrCreate({
       where: { userId: req.params.userId, status: 'open' },
     });
-    // console.log(cyan(`grabbed currentUserCard of:`));
-    // console.dir(currentUserCart);
+    console.log(cyan(`grabbed currentUserOrder of:`));
+    console.dir(currentUserOrder);
     // grab current User Cart (same as GET /:userId/cart)
 
     const currentProduct = await Product.findByPk(productId);
@@ -100,5 +102,18 @@ router.post('/:userId/addToCart', async (req, res, next) => {
   } catch (error) {
     console.log(red(`error in router.post for addToCart: ${error}`));
     next(error);
+  }
+});
+
+router.delete('/:userId/clearCart', async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const cart = await Order.findOne({
+      where: { userId, status: 'open' },
+    });
+    await cart.destroy();
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(red(`error in the router.delete ClearCart API route: `), error);
   }
 });
