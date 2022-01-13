@@ -90,11 +90,14 @@ router.post("/:userId/addToCart", async (req, res, next) => {
     res
       .status(200)
       //returns an array describing the cart contents
-      .json(
-        await currentUserCart.getProducts({
-          attributes: ["id", "name", "price"],
-        })
-      );
+      // .json(
+      //   await currentUserCart.getProducts({
+      //     attributes: ["id", "name", "price"],
+      //   })
+      // );
+
+      //return the object that was added to the cart. this helps the action/thunk work correctly.
+      .json({ currentProduct, quantity });
   } catch (error) {
     console.log(red(`error in router.post for addToCart: ${error}`));
     next(error);
