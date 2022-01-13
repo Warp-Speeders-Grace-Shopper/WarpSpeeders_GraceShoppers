@@ -4,6 +4,7 @@ import axios from 'axios';
 const GET_CART = 'GET_CART';
 const ADD_TO_CART = 'ADD_TO_CART';
 const CLEAR_CART = 'CLEAR_CART';
+const REMOVE_ITEM_FROM_CART = 'REMOVE_ITEM_FROM_CART';
 
 // action creator(s):
 const _getCart = (cart) => {
@@ -16,6 +17,10 @@ const _clearCart = () => {
 
 const _addToCart = (product) => {
   return { type: ADD_TO_CART, product };
+};
+
+const _removeItemFromCart = (product) => {
+  return { type: REMOVE_ITEM_FROM_CART, product };
 };
 
 // thunk(s)
@@ -59,8 +64,14 @@ export const addToCart = (productId, userId) => async (dispatch) => {
 };
 
 export const clearCart = () => async (dispatch) => {
-  console.log(`clearCart thunk reached`);
+  // console.log(`clearCart thunk reached`);
   dispatch(_clearCart());
+};
+
+export const removeItemFromCart = (product) => async (dispatch) => {
+  // console.log(`remove item thunk reached`);
+  // console.dir(product);
+  dispatch(_removeItemFromCart(product));
 };
 
 // Reducer
@@ -72,6 +83,8 @@ export default function cart(state = [], action) {
       return [...state, action.product];
     case CLEAR_CART:
       return [];
+    case REMOVE_ITEM_FROM_CART:
+      return state.filter((plant) => plant.id !== action.product.id);
     default:
       return state;
   }

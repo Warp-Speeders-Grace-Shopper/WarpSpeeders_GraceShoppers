@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { clearCart, getCart } from '../store/cart';
+import { clearCart, getCart, removeItemFromCart } from '../store/cart';
 import { useDispatch, useSelector } from 'react-redux';
 
 const CartView = () => {
@@ -15,11 +15,12 @@ const CartView = () => {
   // put that cart in local scope
 
   function handleRemove(cartItem) {
-    console.dir(cartItem);
+    // removes individual items from cart
+    dispatch(removeItemFromCart(cartItem));
   }
 
   function handleClearCart() {
-    console.log(`clear cart pushed`);
+    // removes all items from user cart
     dispatch(clearCart());
   }
 
