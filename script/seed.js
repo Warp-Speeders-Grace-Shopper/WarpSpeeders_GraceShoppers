@@ -40,7 +40,7 @@ async function seed() {
   const tylerUser = await User.findOne({ where: { username: "tyler" } });
   const tylerOrder = await tylerUser.createOrder({});
   const tylerOrderTwo = await tylerUser.createOrder({ status: "complete" });
-  const tylerOrderThree = await tylerUser.createOrder({});
+  const tylerOrderThree = await tylerUser.createOrder({ status: "complete" });
   await tylerOrder.addProduct(products[0]);
   await tylerOrder.addProduct(products[1]);
   // Many items
