@@ -34,3 +34,20 @@ router.get("/:userId/orders", async (req, res, next) => {
     next(error);
   }
 });
+
+router.get("/:userId/cart", async (req, res, next) => {
+  try {
+    const cart = await Order.findAll({
+      // find one order for this user with status of "open"
+      where: { userId: req.params.userId, status: "open" },
+    });
+    if (cart.length > 1)
+      console.log(`warning: more than one open order for this user found!`);
+    res.send(cart);
+  } catch (error) {
+    console.log(
+      `error in router.get route /api/users/:userId/orders: ${error}`
+    );
+    next(error);
+  }
+});
