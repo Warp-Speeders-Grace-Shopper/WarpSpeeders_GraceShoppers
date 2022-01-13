@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 
 // action type constant(s):
-const GET_CART = "GET_CART";
-const ADD_TO_CART = "ADD_TO_CART";
+const GET_CART = 'GET_CART';
+const ADD_TO_CART = 'ADD_TO_CART';
 
 // action creator(s):
 const _getCart = (cart) => {
@@ -28,23 +28,30 @@ export const getCart = (userId) => {
 
 export const addToCart = (productId, userId) => async (dispatch) => {
   try {
-    const axiosResponse = await axios.post(`/api/users/${userId}/addToCart`, {
-      productId,
-    });
-    dispatch(_addToCart(axiosResponse.data));
+    if (userId === 0) {
+      // guest addToCart flow:
+      const axiosResponse = await axios.get(`/api/products/${productId}`);
+      dispatch(_addToCart(axiosResponse.data));
+    } else {
+      //logged-in user addToCart flow:
+      const axiosResponse = await axios.post(`/api/users/${userId}/addToCart`, {
+        productId,
+      });
+      dispatch(_addToCart(axiosResponse.data));
+    }
   } catch (error) {
     console.log(`error in the addToCart thunk: ${error}`);
   }
 };
 
-export const addToGuestCart = (productId) => async (dispatch) => {
-  try {
-    const axiosResponse = await axios.get(`/api/products/${productId}`);
-    dispatch(_addToCart(axiosResponse.data));
-  } catch (error) {
-    console.log(`error in the addToGuestCart! ${error}`);
-  }
-};
+// export const addToGuestCart = (productId) => async (dispatch) => {
+//   try {
+//     const axiosResponse = await axios.get(`/api/products/${productId}`);
+//     dispatch(_addToCart(axiosResponse.data));
+//   } catch (error) {
+//     console.log(`error in the addToGuestCart! ${error}`);
+//   }
+// };
 
 // Reducer
 export default function cart(state = [], action) {
