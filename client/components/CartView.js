@@ -14,14 +14,14 @@ const CartView = () => {
   const cart = useSelector((state) => state.cart);
   // put that cart in local scope
 
-  function handleRemove(cartItem) {
+  function handleRemove(cartItem, userId = 0) {
     // removes individual items from cart
-    dispatch(removeItemFromCart(cartItem));
+    dispatch(removeItemFromCart(cartItem, userId));
   }
 
-  function handleClearCart() {
+  function handleClearCart(userId = 0) {
     // removes all items from user cart
-    dispatch(clearCart());
+    dispatch(clearCart(userId));
   }
 
   return (
@@ -59,7 +59,7 @@ const CartView = () => {
                       <button
                         type="button"
                         style={{ backgroundColor: 'pink' }}
-                        onClick={() => handleRemove(cartItem)}
+                        onClick={() => handleRemove(cartItem, id)}
                       >
                         X remove
                       </button>
@@ -98,7 +98,7 @@ const CartView = () => {
                   <button
                     type="button"
                     style={{ backgroundColor: 'lightyellow' }}
-                    onClick={() => handleClearCart()}
+                    onClick={() => handleClearCart(id)}
                   >
                     Clear Cart
                   </button>

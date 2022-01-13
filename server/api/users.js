@@ -49,11 +49,14 @@ router.get('/:userId/cart', async (req, res, next) => {
       );
     }
 
-    const currentCartContents = await cart[0].getProducts();
-    const count = await cart[0].countProducts();
-    //not used^ but could come in handy
-
-    res.send(currentCartContents);
+    if (!cart[0]) {
+      res.sendStatus(204);
+      // if the user has no cart, just return 204 (no content)
+    } else {
+      const currentCartContents = await cart[0].getProducts();
+      //if they do have a cart, get its products and send them as response
+      res.send(currentCartContents);
+    }
   } catch (error) {
     console.log(
       `error in router.get route /api/users/:userId/orders: ${error}`
@@ -65,16 +68,21 @@ router.get('/:userId/cart', async (req, res, next) => {
 router.post('/:userId/addToCart', async (req, res, next) => {
   try {
     const { productId, quantity = 1 } = req.body;
+    const { userId } = req.params;
     console.log(
       red(`grabbed productId of ${productId}, quantity of ${quantity}`)
     );
     //grab productId and quantity from the request body. this is extensible to handle additional options
 
-    const currentUserOrder = await Order.findOrCreate({
-      where: { userId: req.params.userId, status: 'open' },
+    let currentUserOrder = await Order.findOne({
+      where: { userId, status: 'open' },
     });
     console.log(cyan(`grabbed currentUserOrder of:`));
     console.dir(currentUserOrder);
+
+    if (!currentUserOrder) {
+      currentUserOrder = await Order.create({ userId, status: 'open' });
+    }
     // grab current User Cart (same as GET /:userId/cart)
 
     const currentProduct = await Product.findByPk(productId);
@@ -112,8 +120,10 @@ router.delete('/:userId/clearCart', async (req, res, next) => {
       where: { userId, status: 'open' },
     });
     await cart.destroy();
+    console.log(`cart destroyed.`);
     res.sendStatus(200);
   } catch (error) {
     console.log(red(`error in the router.delete ClearCart API route: `), error);
+    next(error);
   }
 });

@@ -63,8 +63,13 @@ export const addToCart = (productId, userId) => async (dispatch) => {
   }
 };
 
-export const clearCart = () => async (dispatch) => {
-  // console.log(`clearCart thunk reached`);
+export const clearCart = (userId) => async (dispatch) => {
+  if (userId != 0) {
+    // destroy cart in db for logged-in users:
+    console.log(`logged-in user detected. attempting to delete cart from db`);
+    await axios.delete(`/api/users/${userId}/clearCart`);
+  }
+  // update cart in redux store for all users:
   dispatch(_clearCart());
 };
 
