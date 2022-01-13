@@ -1,17 +1,17 @@
-const router = require("express").Router();
+const router = require('express').Router();
 const {
   models: { User, Order, Product, Order_Product },
-} = require("../db");
+} = require('../db');
 module.exports = router;
-const { red, yellow, cyan, green } = require("chalk");
+const { red, yellow, cyan, green } = require('chalk');
 
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const users = await User.findAll({
       // explicitly select only the id and username fields - even though
       // users' passwords are encrypted, it won't help if we just
       // send everything to anyone who asks!
-      attributes: ["id", "username"],
+      attributes: ['id', 'username'],
     });
     res.json(users);
   } catch (err) {
@@ -21,7 +21,7 @@ router.get("/", async (req, res, next) => {
 
 // all routes in this file prepended with /api/users
 // so this can be reached via [project]/api/users/:userId/orders
-router.get("/:userId/orders", async (req, res, next) => {
+router.get('/:userId/orders', async (req, res, next) => {
   try {
     const orders = await Order.findAll({
       // find all orders in db where userId matches the :userId url param
@@ -36,11 +36,11 @@ router.get("/:userId/orders", async (req, res, next) => {
   }
 });
 
-router.get("/:userId/cart", async (req, res, next) => {
+router.get('/:userId/cart', async (req, res, next) => {
   try {
     const cart = await Order.findAll({
       // find one order for this user with status of "open"
-      where: { userId: req.params.userId, status: "open" },
+      where: { userId: req.params.userId, status: 'open' },
     });
     if (cart.length > 1) {
       //give us a warning if a user ever has more than one "cart" - maybe we'd merge them together just to be safe?
@@ -62,14 +62,14 @@ router.get("/:userId/cart", async (req, res, next) => {
   }
 });
 
-router.post("/:userId/addToCart", async (req, res, next) => {
+router.post('/:userId/addToCart', async (req, res, next) => {
   try {
     const { productId, quantity = 1 } = req.body;
     // console.log(red(`grabbed productId of ${productId}`));
     //grab productId and quantity from the request body. this is extensible to handle additional options
 
-    const currentUserCart = await Order.findOne({
-      where: { userId: req.params.userId, status: "open" },
+    const currentUserOrder = await Order.findOne({
+      where: { userId: req.params.userId, status: 'open' },
     });
     // console.log(cyan(`grabbed currentUserCard of:`));
     // console.dir(currentUserCart);
@@ -79,25 +79,21 @@ router.post("/:userId/addToCart", async (req, res, next) => {
     // console.log(yellow(`currentProduct grabbed as:`));
     // console.dir(currentProduct);
 
-    try {
-      await currentUserCart.addProduct(currentProduct, {
-        through: { quantity },
-      });
-    } catch (error) {
-      console.log(red(`failed to addProduct! ${error}`));
-    }
+    await currentUserOrder.addProduct(currentProduct, {
+      through: { quantity },
+    });
+
+    const productAddedToCart = await currentUserOrder.getProducts({
+      where: { id: productId },
+    });
+    // this back and forth ensures we don't send the http response to the user
+    // until we know the db update is complete
 
     res
       .status(200)
-      //returns an array describing the cart contents
-      // .json(
-      //   await currentUserCart.getProducts({
-      //     attributes: ["id", "name", "price"],
-      //   })
-      // );
 
       //return the object that was added to the cart. this helps the action/thunk work correctly.
-      .json({ currentProduct, quantity });
+      .send(productAddedToCart[0]);
   } catch (error) {
     console.log(red(`error in router.post for addToCart: ${error}`));
     next(error);

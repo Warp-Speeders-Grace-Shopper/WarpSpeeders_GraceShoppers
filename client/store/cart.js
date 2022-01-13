@@ -31,11 +31,20 @@ export const addToCart = (productId, userId) => async (dispatch) => {
     if (userId === 0) {
       // guest addToCart flow:
       const axiosResponse = await axios.get(`/api/products/${productId}`);
-      dispatch(_addToCart(axiosResponse.data));
+      dispatch(
+        _addToCart({
+          ...axiosResponse.data,
+          Order_Product: {
+            quantity: 1,
+            checkoutPrice: axiosResponse.data.price,
+          }, // this mimics the Order_Product stuff that would be added on when added to the actual db
+          // this allows _addToCart action to handle logged-in AND logged-out users.
+        })
+      );
     } else {
       //logged-in user addToCart flow:
       const axiosResponse = await axios.post(`/api/users/${userId}/addToCart`, {
-        productId,
+        productId, // this object can handle quantity already, we can also add other options!
       });
       dispatch(_addToCart(axiosResponse.data));
     }
@@ -43,15 +52,6 @@ export const addToCart = (productId, userId) => async (dispatch) => {
     console.log(`error in the addToCart thunk: ${error}`);
   }
 };
-
-// export const addToGuestCart = (productId) => async (dispatch) => {
-//   try {
-//     const axiosResponse = await axios.get(`/api/products/${productId}`);
-//     dispatch(_addToCart(axiosResponse.data));
-//   } catch (error) {
-//     console.log(`error in the addToGuestCart! ${error}`);
-//   }
-// };
 
 // Reducer
 export default function cart(state = [], action) {

@@ -4,18 +4,24 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const CartView = () => {
   const { id, username } = useSelector((state) => state.auth);
+  //grab user ID and username from state
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (id) dispatch(getCart(id));
   }, [id]);
+  // when the page loads (and whenever user login changes), dispatch getCart
   const cart = useSelector((state) => state.cart);
+  // put that cart in local scope
 
   return (
     <div>
       <h1>Cart for {username || 'Guest'}</h1>
+      {/* heading will show username or "guest" if logged out*/}
       <div>
         {cart[0] ? (
           <table>
+            {/* this table layout is not pretty but it should be easy to refactor*/}
             <thead>
               <tr>
                 <td>
