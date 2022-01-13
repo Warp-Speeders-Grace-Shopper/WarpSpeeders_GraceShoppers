@@ -4,7 +4,7 @@ const {
 } = require("../db");
 module.exports = router;
 
-// all routes prepended with /api/projects
+// all routes prepended with /api/products
 router.get("/", async (req, res, next) => {
   try {
     const products = await Product.findAll();
