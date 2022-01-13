@@ -79,6 +79,9 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     // console.log(yellow(`currentProduct grabbed as:`));
     // console.dir(currentProduct);
 
+    // need to add an IF statement:
+    // if the product already exists in the cart, currentItemInCart.increment('quantity')
+    // if it doesn't, continue with this line below:
     await currentUserOrder.addProduct(currentProduct, {
       through: { quantity },
     });

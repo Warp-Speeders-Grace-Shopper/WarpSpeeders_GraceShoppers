@@ -33,6 +33,9 @@ const CartView = () => {
                 <td>
                   <h3>price</h3>
                 </td>
+                <td>
+                  <h3>edit</h3>
+                </td>
               </tr>
             </thead>
             <tbody>
@@ -42,6 +45,15 @@ const CartView = () => {
                     <td>{cartItem.name}</td>
                     <td>{cartItem.Order_Product.quantity}</td>
                     <td>{cartItem.price}</td>
+                    <td>
+                      <button
+                        type="button"
+                        style={{ backgroundColor: 'pink' }}
+                        onClick={() => handleRemove(cartItem)}
+                      >
+                        X remove
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
@@ -72,6 +84,15 @@ const CartView = () => {
                     }
                   </h3>
                 </td>
+                <td>
+                  <button
+                    type="button"
+                    style={{ backgroundColor: 'lightyellow' }}
+                    onClick={() => handleClearCart()}
+                  >
+                    Clear Cart
+                  </button>
+                </td>
               </tr>
             </tfoot>
           </table>
@@ -82,5 +103,13 @@ const CartView = () => {
     </div>
   );
 };
+
+function handleRemove(cartItem) {
+  console.dir(cartItem);
+}
+
+function handleClearCart() {
+  console.log(`clear cart pushed`);
+}
 
 export default CartView;
