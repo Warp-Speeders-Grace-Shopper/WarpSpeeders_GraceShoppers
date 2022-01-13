@@ -6,6 +6,8 @@ import Home from "./components/Home";
 import { me } from "./store";
 import SingleProduct from "./components/SingleProduct";
 import AllProducts from "./components/AllProducts";
+import AdminProductPanel from "./components/AdminProductPanel";
+import EditProduct from "./components/EditProduct";
 
 /**
  * COMPONENT
@@ -16,15 +18,17 @@ class Routes extends Component {
   }
 
   render() {
-    const { isLoggedIn } = this.props;
+    const { isLoggedIn, isAdmin } = this.props;
 
     return (
       <div>
         {isLoggedIn ? (
           <Switch>
             <Route path="/products" exact component={AllProducts} />
-            <Route path="/products/:productId" component={SingleProduct} />
+            <Route path="/products/:productId" exact component={SingleProduct} />
             <Route path="/home" component={Home} />
+            {isAdmin && <Route path="/admin" component={AdminProductPanel} />}
+            {isAdmin && <Route path="/products/edit/:productId" component={EditProduct} />}
             <Redirect to="/home" />
           </Switch>
         ) : (
@@ -49,6 +53,7 @@ const mapState = (state) => {
     // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
     isLoggedIn: !!state.auth.id,
+    isAdmin: state.auth.type === "admin"
   };
 };
 

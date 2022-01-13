@@ -22,6 +22,7 @@ async function seed() {
     User.create({ username: "elstan", password: "elstan" }),
     User.create({ username: "alston", password: "alston" }),
     User.create({ username: "ryan", password: "ryan" }),
+    User.create({ username: "admin", password: "admin", type: "admin" }),
   ]);
 
   // Creating Products

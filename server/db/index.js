@@ -7,13 +7,6 @@ const Product = require("./models/Product");
 const Order = require("./models/Order");
 const Order_Product = require("./models/Order_Product");
 
-/*
- * User:Order 1:1 
- * Order:User 1:1
- * Order:Product M:M
- * Product:Order M:M
- */
-
 Order.belongsTo(User)
 User.hasOne(Order)
 Product.belongsToMany(Order, { through: Order_Product })
