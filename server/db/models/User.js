@@ -14,7 +14,11 @@ const User = db.define('user', {
   },
   password: {
     type: Sequelize.STRING,
-  }
+  },
+  type: {
+    type: Sequelize.ENUM("customer", "admin"),
+    defaultValue: "customer",
+  },
 })
 
 module.exports = User
@@ -72,5 +76,3 @@ const hashPassword = async(user) => {
 User.beforeCreate(hashPassword)
 User.beforeUpdate(hashPassword)
 User.beforeBulkCreate(users => Promise.all(users.map(hashPassword)))
-
-// afterCreate (?) create cart
