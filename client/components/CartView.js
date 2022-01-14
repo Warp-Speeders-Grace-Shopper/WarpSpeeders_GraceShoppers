@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { clearCart, getCart, removeItemFromCart } from '../store/cart';
 import { useDispatch, useSelector } from 'react-redux';
 
 const CartView = () => {
+  const [editMode, toggleEditMode] = useState(false);
+
   const { id, username } = useSelector((state) => state.auth);
   //grab user ID and username from state
 
@@ -39,9 +41,15 @@ const CartView = () => {
                 </td>
                 <td>
                   <h3> quantity</h3>
+                  <button onClick={() => toggleEditMode(!editMode)}>
+                    {editMode ? 'Save Cart' : 'Edit Quantities'}
+                  </button>
                 </td>
                 <td>
-                  <h3>price</h3>
+                  <h3>price each</h3>
+                </td>
+                <td>
+                  <h3>subtotal</h3>
                 </td>
                 <td>
                   <h3>edit</h3>
@@ -53,8 +61,18 @@ const CartView = () => {
                 return (
                   <tr key={keyIndex}>
                     <td>{cartItem.name}</td>
-                    <td>{cartItem.Order_Product.quantity}</td>
+                    <td>
+                      {editMode ? (
+                        <input
+                          type="text"
+                          defaultValue={cartItem.Order_Product.quantity}
+                        />
+                      ) : (
+                        cartItem.Order_Product.quantity
+                      )}
+                    </td>
                     <td>{cartItem.price}</td>
+                    <td>${cartItem.price * cartItem.Order_Product.quantity}</td>
                     <td>
                       <button
                         type="button"
@@ -84,12 +102,13 @@ const CartView = () => {
                     items
                   </h3>
                 </td>
+                <td> </td>
                 <td>
                   <h3>
                     $
                     {
                       cart.reduce((accum, val) => {
-                        return val.price + accum;
+                        return val.price * val.Order_Product.quantity + accum;
                       }, 0)
                       // this reduce sums up the total price of items in the cart.
                     }
