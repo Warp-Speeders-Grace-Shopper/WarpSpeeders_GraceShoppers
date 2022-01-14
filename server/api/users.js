@@ -42,7 +42,7 @@ router.get('/:userId/cart', async (req, res, next) => {
       where: { userId: req.params.userId, status: 'open' },
     });
     if (cart.length > 1) {
-      //give us a warning if a user ever has more than one "cart" - maybe we'd merge them together just to be safe?
+      // give us a warning if a user ever has more than one "cart" - maybe we'd merge them together just to be safe?
       console.log(`warning: more than one open order for this user found!`);
     }
 
@@ -51,7 +51,7 @@ router.get('/:userId/cart', async (req, res, next) => {
       // if the user has no cart, just return 204 (no content)
     } else {
       const currentCartContents = await cart[0].getProducts();
-      //if they do have a cart, get its products and send them as response
+      // if they do have a cart, get its products and send them as response
       res.send(currentCartContents);
     }
   } catch (error) {
@@ -64,23 +64,19 @@ router.get('/:userId/cart', async (req, res, next) => {
 
 router.post('/:userId/addToCart', async (req, res, next) => {
   try {
+    // get productId and quantity from req body; userId from URL param:
     const { productId, quantity = 1 } = req.body;
     const { userId } = req.params;
-    // console.log(
-    //   `grabbed productId of ${productId}, quantity of ${quantity}`
-    // );
-    //grab productId and quantity from the request body. this is extensible to handle additional options
 
+    // find current user's cart in db:
     let currentUserOrder = await Order.findOne({
       where: { userId, status: 'open' },
     });
-    // console.log(`grabbed currentUserOrder of:`);
-    // console.dir(currentUserOrder);
 
+    // if they don't have a cart, create one: (similar to GET /:userId/cart)
     if (!currentUserOrder) {
       currentUserOrder = await Order.create({ userId, status: 'open' });
     }
-    // grab current User Cart (same as GET /:userId/cart)
     // note: findOrCreate() should be a substitute for the above two actions, but it's not working.
 
     const currentProduct = await Product.findByPk(productId);
@@ -112,8 +108,7 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     //   await orderInCart.increment('quantity');
     // }
 
-    // if the product already exists in the cart, currentItemInCart.increment('quantity')
-    // if it doesn't, continue with this line below:
+    // add qty of currentProduct to current user's order in db
     await currentUserOrder.addProduct(currentProduct, {
       through: { quantity },
     });
@@ -121,11 +116,10 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     const productAddedToCart = await currentUserOrder.getProducts({
       where: { id: productId },
     });
-    // this back and forth ensures we don't send the http response to the user
-    // until we know the db update is complete
+    // this back and forth is just to double-check, can probably remove later
 
     res.status(200).send(productAddedToCart[0]);
-    //return the object that was added to the cart. this helps the action/thunk work correctly.
+    //return the actual object that was added to the cart. this helps the action/thunk work correctly.
   } catch (error) {
     console.log(`error in router.post for addToCart: ${error}`);
     next(error);
@@ -135,11 +129,12 @@ router.post('/:userId/addToCart', async (req, res, next) => {
 router.delete('/:userId/clearCart', async (req, res, next) => {
   const { userId } = req.params;
   try {
+    // get user's cart from db:
     const cart = await Order.findOne({
       where: { userId, status: 'open' },
     });
+    // destroy the cart and send status 200 (success)
     await cart.destroy();
-    console.log(`cart destroyed.`);
     res.sendStatus(200);
   } catch (error) {
     console.log(`error in the router.delete ClearCart API route: `, error);
@@ -150,11 +145,16 @@ router.delete('/:userId/clearCart', async (req, res, next) => {
 router.delete('/:userId/removeFromCart/:itemId', async (req, res, next) => {
   try {
     const { userId, itemId } = req.params;
+
+    // get user's cart from db:
     const cart = await Order.findOne({
       where: { userId, status: 'open' },
     });
+
+    //use magic method to remove product
     await cart.removeProduct(itemId);
     // console.log(Object.keys(cart.__proto__));   <----- magic method checker
+
     res.status(200).send(itemId);
   } catch (error) {
     console.log(
