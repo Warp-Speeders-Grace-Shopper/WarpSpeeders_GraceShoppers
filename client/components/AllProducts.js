@@ -16,7 +16,7 @@ const AllProducts = () => {
           <div key={i}>
             <Link to={`/products/${product.id}`}>
               <div>
-                {product.name} ${product.price}
+                {product.name} ${(product.price)/100}
               </div>
               <img src={product.imageUrl} style={{ maxWidth: "10rem" }} />
             </Link>
