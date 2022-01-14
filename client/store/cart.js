@@ -36,7 +36,7 @@ export const getCart = (userId) => {
   };
 };
 
-export const addToCart = (productId, userId) => async (dispatch) => {
+export const addToCart = (productId, quantity, userId) => async (dispatch) => {
   try {
     if (userId === 0) {
       // guest addToCart flow:
@@ -45,7 +45,7 @@ export const addToCart = (productId, userId) => async (dispatch) => {
         _addToCart({
           ...axiosResponse.data,
           Order_Product: {
-            quantity: 1,
+            quantity,
             checkoutPrice: axiosResponse.data.price,
           }, // this mimics the Order_Product stuff that would be added on when added to the actual db
           // this allows _addToCart action to handle logged-in AND logged-out users.

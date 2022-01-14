@@ -22,14 +22,22 @@ export default function () {
       <button
         type="button"
         onClick={() => {
-          addToCartHandler(singleProduct.id, userId);
+          addToCartHandler(singleProduct.id, 1, userId);
         }}
       >
         Add 1 to Cart
       </button>
+      <button
+        type="button"
+        onClick={() => {
+          addToCartHandler(singleProduct.id, 5, userId);
+        }}
+      >
+        Add 5 to Cart
+      </button>
     </div>
   );
-  function addToCartHandler(productId, userId = 0) {
-    dispatch(addToCart(productId, userId));
+  function addToCartHandler(productId, quantity = 1, userId = 0) {
+    dispatch(addToCart(productId, quantity, userId));
   }
 }
