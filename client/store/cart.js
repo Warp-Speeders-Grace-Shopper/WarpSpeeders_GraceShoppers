@@ -64,19 +64,32 @@ export const addToCart = (productId, userId) => async (dispatch) => {
 };
 
 export const clearCart = (userId) => async (dispatch) => {
-  if (userId != 0) {
-    // destroy cart in db for logged-in users:
-    console.log(`logged-in user detected. attempting to delete cart from db`);
-    await axios.delete(`/api/users/${userId}/clearCart`);
+  try {
+    if (userId != 0) {
+      // destroy cart in db for logged-in users:
+      // console.log(`logged-in user detected. attempting to delete cart from db`);
+      await axios.delete(`/api/users/${userId}/clearCart`);
+    }
+    // reset cart in redux store for all users:
+    dispatch(_clearCart());
+  } catch (error) {
+    console.log(`error in the clearCart thunk: ${error}`);
   }
-  // update cart in redux store for all users:
-  dispatch(_clearCart());
 };
 
-export const removeItemFromCart = (product) => async (dispatch) => {
-  // console.log(`remove item thunk reached`);
-  // console.dir(product);
-  dispatch(_removeItemFromCart(product));
+export const removeItemFromCart = (product, userId) => async (dispatch) => {
+  try {
+    if (userId != 0) {
+      // destroy cart in db for logged-in users:
+      console.log(`logged-in user detected. attempting to delete cart from db`);
+      await axios.delete(`/api/users/${userId}/removeFromCart/${product.id}`);
+    }
+    // console.log(`remove item thunk reached`);
+    // console.dir(product);
+    dispatch(_removeItemFromCart(product));
+  } catch (error) {
+    console.log(`error in the removeItemFromCart thunk: ${error}`);
+  }
 };
 
 // Reducer

@@ -77,13 +77,14 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     let currentUserOrder = await Order.findOne({
       where: { userId, status: 'open' },
     });
-    console.log(cyan(`grabbed currentUserOrder of:`));
-    console.dir(currentUserOrder);
+    // console.log(cyan(`grabbed currentUserOrder of:`));
+    // console.dir(currentUserOrder);
 
     if (!currentUserOrder) {
       currentUserOrder = await Order.create({ userId, status: 'open' });
     }
     // grab current User Cart (same as GET /:userId/cart)
+    // note: findOrCreate() should be a substitute for the above two actions, but it's not working.
 
     const currentProduct = await Product.findByPk(productId);
     // console.log(yellow(`currentProduct grabbed as:`));
@@ -102,11 +103,8 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     // this back and forth ensures we don't send the http response to the user
     // until we know the db update is complete
 
-    res
-      .status(200)
-
-      //return the object that was added to the cart. this helps the action/thunk work correctly.
-      .send(productAddedToCart[0]);
+    res.status(200).send(productAddedToCart[0]);
+    //return the object that was added to the cart. this helps the action/thunk work correctly.
   } catch (error) {
     console.log(red(`error in router.post for addToCart: ${error}`));
     next(error);
@@ -124,6 +122,23 @@ router.delete('/:userId/clearCart', async (req, res, next) => {
     res.sendStatus(200);
   } catch (error) {
     console.log(red(`error in the router.delete ClearCart API route: `), error);
+    next(error);
+  }
+});
+
+router.delete('/:userId/removeFromCart/:itemId', async (req, res, next) => {
+  try {
+    const { userId, itemId } = req.params;
+    const cart = await Order.findOne({
+      where: { userId, status: 'open' },
+    });
+    await cart.removeProduct(itemId);
+    // console.log(Object.keys(cart.__proto__));   <----- magic method checker
+    res.status(200).send(itemId);
+  } catch (error) {
+    console.log(
+      `error in the router.delete route to remove items from cart: ${error}`
+    );
     next(error);
   }
 });
