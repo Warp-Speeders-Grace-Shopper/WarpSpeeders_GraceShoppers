@@ -1,10 +1,9 @@
-"use strict";
+'use strict';
 
 const {
   db,
   models: { User, Product, Order, Order_Product },
-} = require("../server/db");
-const { red, green } = require("chalk");
+} = require('../server/db');
 
 /**
  * seed - this function clears the database, updates tables to
@@ -12,16 +11,16 @@ const { red, green } = require("chalk");
  */
 async function seed() {
   await db.sync({ force: true }); // clears db and matches models to tables
-  console.log("db synced!");
+  console.log('db synced!');
 
   // Creating Users
   const users = await Promise.all([
-    User.create({ username: "cody", password: "123" }),
-    User.create({ username: "murphy", password: "123" }),
-    User.create({ username: "tyler", password: "tyler" }),
-    User.create({ username: "elstan", password: "elstan" }),
-    User.create({ username: "alston", password: "alston" }),
-    User.create({ username: "ryan", password: "ryan" }),
+    User.create({ username: 'cody', password: '123' }),
+    User.create({ username: 'murphy', password: '123' }),
+    User.create({ username: 'tyler', password: 'tyler' }),
+    User.create({ username: 'elstan', password: 'elstan' }),
+    User.create({ username: 'alston', password: 'alston' }),
+    User.create({ username: 'ryan', password: 'ryan' }),
   ]);
 
   // Creating Products
@@ -165,14 +164,14 @@ async function seed() {
   // Create Orders for Users, add Products to Orders
 
   // Baseline -- few items, single item added x2
-  const tylerUser = await User.findOne({ where: { username: "tyler" } });
+  const tylerUser = await User.findOne({ where: { username: 'tyler' } });
   const tylerOrder = await tylerUser.createOrder({});
-  const tylerOrderTwo = await tylerUser.createOrder({ status: "complete" });
-  const tylerOrderThree = await tylerUser.createOrder({ status: "complete" });
+  const tylerOrderTwo = await tylerUser.createOrder({ status: 'complete' });
+  const tylerOrderThree = await tylerUser.createOrder({ status: 'complete' });
   await tylerOrder.addProduct(products[0]);
   await tylerOrder.addProduct(products[1]);
   // Many items
-  const elstanUser = await User.findOne({ where: { username: "elstan" } });
+  const elstanUser = await User.findOne({ where: { username: 'elstan' } });
   const elstanOrder = await elstanUser.createOrder({});
   await elstanOrder.addProduct(products[23]);
   await elstanOrder.addProduct(products[22]);
@@ -183,17 +182,17 @@ async function seed() {
   await elstanOrder.addProduct(products[3]);
   await elstanOrder.addProduct(products[1]);
   // Single item, added with qty >> 1 and checkoutPrice
-  const alstonUser = await User.findOne({ where: { username: "alston" } });
+  const alstonUser = await User.findOne({ where: { username: 'alston' } });
   const alstonOrder = await alstonUser.createOrder({});
   await alstonOrder.addProduct(products[7], {
     through: { quantity: 6, checkoutPrice: products[7].price },
   });
   // No items
-  const ryanUser = await User.findOne({ where: { username: "ryan" } });
+  const ryanUser = await User.findOne({ where: { username: 'ryan' } });
   const ryanOrder = await ryanUser.createOrder({});
   // User with complete order and active order
-  const murphyUser = await User.findOne({ where: { username: "murphy" } });
-  const murphyOrder = await murphyUser.createOrder({ status: "complete" });
+  const murphyUser = await User.findOne({ where: { username: 'murphy' } });
+  const murphyOrder = await murphyUser.createOrder({ status: 'complete' });
   await murphyOrder.addProduct(products[0]);
   await murphyOrder.addProduct(products[1]);
   const murphyOrder2 = await murphyUser.createOrder();
@@ -203,7 +202,7 @@ async function seed() {
   console.log(
     `seeded ${users.length} users\nseeded ${products.length} products`
   );
-  console.log(green(`seeded successfully`));
+  console.log(`seeded successfully`);
   return {
     users: {
       cody: users[0],
@@ -218,16 +217,16 @@ async function seed() {
  The `seed` function is concerned only with modifying the database.
 */
 async function runSeed() {
-  console.log("seeding...");
+  console.log('seeding...');
   try {
     await seed();
   } catch (err) {
-    console.error(red(err));
+    console.error(err);
     process.exitCode = 1;
   } finally {
-    console.log("closing db connection");
+    console.log('closing db connection');
     await db.close();
-    console.log("db connection closed");
+    console.log('db connection closed');
   }
 }
 
