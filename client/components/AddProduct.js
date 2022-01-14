@@ -1,16 +1,26 @@
-// Type: plant, pot, tool, apparelimport React, { useEffect } from "react";
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../store/products";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addProduct } from "../store/products";
 
-const AdminProductPanel = () => {
+const AdminProductPanel = ({ toggleAddProduct }) => {
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState( 
-    { name: '', price: '', imageUrl: '', type: '', description: ''}
-  );
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    imageUrl: "",
+    type: "",
+    description: "",
+  });
 
-  const handleClick = () => {
-    console.log(formData);
+  const handleCancel = () => {
+    setFormData({
+      name: "",
+      price: "",
+      imageUrl: "",
+      type: "",
+      description: "",
+    });
+    toggleAddProduct();
   };
   const handleChange = (e) => {
     setFormData({
@@ -18,9 +28,17 @@ const AdminProductPanel = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    dispatch(addProduct(formData));
+    setFormData({
+      name: "",
+      price: "",
+      imageUrl: "",
+      type: "",
+      description: "",
+    });
+    toggleAddProduct();
   };
 
   const { name, price, imageUrl, type, description } = formData;
@@ -29,7 +47,7 @@ const AdminProductPanel = () => {
     <div>
       <h3>Add New Product</h3>
       <form onSubmit={handleSubmit}>
-        <button type="button" onClick={handleClick}>
+        <button type="button" onClick={handleCancel}>
           Cancel
         </button>
         <label htmlFor="name">Name</label>

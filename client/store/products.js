@@ -3,9 +3,9 @@ import axios from "axios";
 //Action Types
 
 const GET_PRODUCTS = "GET_PRODUCTS";
-const ADD_PRODUCT = "GET_PRODUCT";
-const DELETE_PRODUCT = "GET_PRODUCT";
-const EDIT_PRODUCT = "GET_PRODUCT";
+const ADD_PRODUCT = "ADD_PRODUCT";
+const DELETE_PRODUCT = "DELETE_PRODUCT";
+const EDIT_PRODUCT = "EDIT_PRODUCT";
 
 //Action Creators
 
@@ -67,7 +67,7 @@ export const deleteProduct = (productId) => {
 export const editProduct = (product) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.put(`/api/products/${product.Id}`, product);
+      const { data } = await axios.put(`/api/products/${product.id}`, product);
       dispatch(_editProduct(data));
     } catch (err) {
       console.log(err);
@@ -82,7 +82,7 @@ const initialState = [];
 export default function products(state = initialState, action) {
   switch (action.type) {
     case GET_PRODUCTS:
-      return action.products;
+      return action.products.sort((p1, p2) => p1.id - p2.id);
     case ADD_PRODUCT:
       return [...state, action.product];
     case DELETE_PRODUCT:

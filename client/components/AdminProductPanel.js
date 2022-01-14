@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../store/products";
 import { Link } from "react-router-dom";
+import { getProducts } from "../store/products";
 import AddProduct from "./AddProduct";
 
 const AdminProductPanel = () => {
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
-  const [showAddProduct, setShowAddProduct] = useState(false)
+  const [showAddProduct, setShowAddProduct] = useState(false);
 
   useEffect(() => {
     dispatch(getProducts());
   }, []);
 
   const toggleAddProduct = () => {
-      setShowAddProduct(!showAddProduct)
-  }
+    setShowAddProduct(!showAddProduct);
+  };
 
   return (
     <div>
       <h2>Admin Product Panel</h2>
-      <button onClick={toggleAddProduct}>Add Product</button>
-      {showAddProduct && (
-          <AddProduct />
+      {!showAddProduct && (
+        <button onClick={toggleAddProduct}>Add Product</button>
       )}
+      {showAddProduct && <AddProduct toggleAddProduct={toggleAddProduct} />}
       {products.length && (
         <div>
           {products.map((product, i) => {
