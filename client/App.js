@@ -1,14 +1,15 @@
-import React from 'react'
-import Navbar from './components/Navbar'
-import Routes from './Routes'
+import React from 'react';
+import Navbar from './components/Navbar';
+import Routes from './Routes';
+import Container from 'react-bootstrap/Container';
 
 const App = () => {
   return (
-    <div>
+    <Container fluid>
       <Navbar />
       <Routes />
-    </div>
-  )
-}
+    </Container>
+  );
+};
 
-export default App
+export default App;
