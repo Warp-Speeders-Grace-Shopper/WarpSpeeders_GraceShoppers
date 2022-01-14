@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { clearCart, getCart, removeItemFromCart } from '../store/cart';
 import { useDispatch, useSelector } from 'react-redux';
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table';
 
 const CartView = () => {
   const [editMode, toggleEditMode] = useState(false);
@@ -27,12 +30,12 @@ const CartView = () => {
   }
 
   return (
-    <div>
+    <Container>
       <h1>Cart for {username || 'Guest'}</h1>
       {/* heading will show username or "guest" if logged out*/}
       <div>
         {cart[0] ? (
-          <table>
+          <Table responsive>
             {/* this table layout is not pretty but it should be easy to refactor*/}
             <thead>
               <tr>
@@ -85,16 +88,19 @@ const CartView = () => {
                         cartItem.Order_Product.quantity
                       )}
                     </td>
-                    <td>{cartItem.price}</td>
-                    <td>${cartItem.price * cartItem.Order_Product.quantity}</td>
+                    <td>${cartItem.price / 100}</td> {/*price per item */}
                     <td>
-                      <button
-                        type="button"
-                        style={{ backgroundColor: 'pink' }}
+                      $
+                      {(cartItem.price / 100) * cartItem.Order_Product.quantity}
+                    </td>{' '}
+                    {/*subtotal for this item */}
+                    <td>
+                      <Button
+                        variant="outline-danger"
                         onClick={() => handleRemove(cartItem, id)}
                       >
                         X remove
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 );
@@ -122,29 +128,27 @@ const CartView = () => {
                     $
                     {
                       cart.reduce((accum, val) => {
-                        return val.price * val.Order_Product.quantity + accum;
+                        return (
+                          (val.price / 100) * val.Order_Product.quantity + accum
+                        );
                       }, 0)
                       // this reduce sums up the total price of items in the cart.
                     }
                   </h3>
                 </td>
                 <td>
-                  <button
-                    type="button"
-                    style={{ backgroundColor: 'lightyellow' }}
-                    onClick={() => handleClearCart(id)}
-                  >
+                  <Button variant="danger" onClick={() => handleClearCart(id)}>
                     Clear Cart
-                  </button>
+                  </Button>
                 </td>
               </tr>
             </tfoot>
-          </table>
+          </Table>
         ) : (
           'Cart is empty. Buy some stuff!'
         )}
       </div>
-    </div>
+    </Container>
   );
 };
 
