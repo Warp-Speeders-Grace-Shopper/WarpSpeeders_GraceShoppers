@@ -41,9 +41,23 @@ const CartView = () => {
                 </td>
                 <td>
                   <h3> quantity</h3>
-                  <button onClick={() => toggleEditMode(!editMode)}>
-                    {editMode ? 'Save Cart' : 'Edit Quantities'}
-                  </button>
+                  {editMode ? (
+                    <button
+                      onClick={() => {
+                        console.log(
+                          `this button should dispatch an action to update the user's cart!`
+                        );
+                        toggleEditMode(!editMode);
+                      }}
+                    >
+                      {/* this button should update cart. i think it's easiest to pass the whole cart object to it*/}
+                      Save Cart
+                    </button>
+                  ) : (
+                    <button onClick={() => toggleEditMode(!editMode)}>
+                      Edit Quantities
+                    </button>
+                  )}
                 </td>
                 <td>
                   <h3>price each</h3>
