@@ -1,4 +1,3 @@
-
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
@@ -8,7 +7,8 @@ import { me } from './store';
 import SingleProduct from './components/SingleProduct';
 import AllProducts from './components/AllProducts';
 import CartView from './components/CartView';
-
+import AdminProductPanel from './components/AdminProductPanel';
+import EditProduct from './components/EditProduct';
 
 /**
  * COMPONENT
@@ -26,12 +26,8 @@ class Routes extends Component {
         {isLoggedIn ? (
           <Switch>
             <Route path="/products" exact component={AllProducts} />
-
             <Route path="/products/:productId" exact component={SingleProduct} />
-
-           
             <Route path="/cart" component={CartView} />
-
             <Route path="/home" component={Home} />
             {isAdmin && <Route path="/admin" component={AdminProductPanel} />}
             {isAdmin && <Route path="/products/edit/:productId" component={EditProduct} />}

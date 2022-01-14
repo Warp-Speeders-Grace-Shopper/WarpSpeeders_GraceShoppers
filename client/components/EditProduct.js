@@ -26,8 +26,7 @@ const EditProduct = () => {
     setFormData(singleProduct);
   }, [singleProduct]);
 
-  const handleCancel = () => {
-    console.log(formData);
+  const handleBack = () => {
     history.push("/admin");
   };
 
@@ -40,25 +39,23 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     dispatch(editProduct(formData));
   };
 
   const handleDelete = async (e) => {
     e.preventDefault();
     dispatch(deleteProduct(productId));
-    console.log("handleDelete")
     history.push("/admin");
   };
 
   const { name, price, imageUrl, type, description } = formData;
-  console.log("formData", formData);
+
   return (
     <div>
       <h2>Edit Product</h2>
       <form onSubmit={handleSubmit}>
-        <button type="button" onClick={handleCancel}>
-          Cancel
+        <button type="button" onClick={handleBack}>
+          Back
         </button>
         <label htmlFor="name">Name</label>
         <input name="name" onChange={handleChange} value={name} />
