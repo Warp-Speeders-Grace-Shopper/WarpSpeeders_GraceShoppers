@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProduct } from '../store/singleProduct';
 import { useParams } from 'react-router-dom';
-import { addToCart, addToGuestCart } from '../store/cart';
+import { addToCart } from '../store/cart';
 
 export default function () {
   const dispatch = useDispatch();

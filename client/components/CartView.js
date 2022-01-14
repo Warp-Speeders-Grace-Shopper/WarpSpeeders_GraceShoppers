@@ -80,7 +80,8 @@ const CartView = () => {
                         return val.Order_Product.quantity + accum;
                       }, 0)
                       // this reduce sums up the total quantity of items in the cart.
-                    }
+                    }{' '}
+                    items
                   </h3>
                 </td>
                 <td>
