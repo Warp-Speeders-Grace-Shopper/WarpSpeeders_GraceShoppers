@@ -3,7 +3,6 @@ const {
   models: { User, Order, Product, Order_Product },
 } = require('../db');
 module.exports = router;
-const { red, yellow, cyan, green } = require('chalk');
 
 router.get('/', async (req, res, next) => {
   try {
@@ -44,9 +43,7 @@ router.get('/:userId/cart', async (req, res, next) => {
     });
     if (cart.length > 1) {
       //give us a warning if a user ever has more than one "cart" - maybe we'd merge them together just to be safe?
-      console.log(
-        red(`warning: more than one open order for this user found!`)
-      );
+      console.log(`warning: more than one open order for this user found!`);
     }
 
     if (!cart[0]) {
@@ -70,14 +67,14 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     const { productId, quantity = 1 } = req.body;
     const { userId } = req.params;
     // console.log(
-    //   red(`grabbed productId of ${productId}, quantity of ${quantity}`)
+    //   `grabbed productId of ${productId}, quantity of ${quantity}`
     // );
     //grab productId and quantity from the request body. this is extensible to handle additional options
 
     let currentUserOrder = await Order.findOne({
       where: { userId, status: 'open' },
     });
-    // console.log(cyan(`grabbed currentUserOrder of:`));
+    // console.log(`grabbed currentUserOrder of:`);
     // console.dir(currentUserOrder);
 
     if (!currentUserOrder) {
@@ -87,14 +84,14 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     // note: findOrCreate() should be a substitute for the above two actions, but it's not working.
 
     const currentProduct = await Product.findByPk(productId);
-    // console.log(yellow(`currentProduct grabbed as:`));
+    // console.log(`currentProduct grabbed as:`);
     // console.dir(currentProduct);
 
     // console.log(Object.keys(currentUserOrder.__proto__));
     // need to add an IF statement:
     // if (await currentUserOrder.hasProduct(productId)) {
     //   console.log(
-    //     yellow(`looks like that item is already in your cart. incrementing...`)
+    //     `looks like that item is already in your cart. incrementing...`
     //   );
     //   const user = awaitUser.findByPk(userId)
     //   const orderProductRow = Order_Product.findOne({where: {productId}})
@@ -130,7 +127,7 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     res.status(200).send(productAddedToCart[0]);
     //return the object that was added to the cart. this helps the action/thunk work correctly.
   } catch (error) {
-    console.log(red(`error in router.post for addToCart: ${error}`));
+    console.log(`error in router.post for addToCart: ${error}`);
     next(error);
   }
 });
@@ -145,7 +142,7 @@ router.delete('/:userId/clearCart', async (req, res, next) => {
     console.log(`cart destroyed.`);
     res.sendStatus(200);
   } catch (error) {
-    console.log(red(`error in the router.delete ClearCart API route: `), error);
+    console.log(`error in the router.delete ClearCart API route: `, error);
     next(error);
   }
 });
