@@ -97,8 +97,39 @@ export default function cart(state = [], action) {
   switch (action.type) {
     case GET_CART:
       return action.cart;
-    case ADD_TO_CART:
-      return [...state, action.product];
+    case ADD_TO_CART: {
+      const alreadyInCart = state.findIndex(
+        (cartItem) => cartItem.id === action.product.id
+      );
+
+      if (alreadyInCart != -1) {
+        //adding an item already in the cart:
+        // console.log(`adding duplicate item`);
+        const newState = state.map((cartItem) => {
+          // map over each item in state
+          if (cartItem.id != action.product.id) {
+            return cartItem;
+            // ignore the ones that don't match the action
+          } else {
+            return {
+              ...cartItem,
+              Order_Product: {
+                ...cartItem.Order_Product,
+                quantity:
+                  cartItem.Order_Product.quantity +
+                  action.product.Order_Product.quantity,
+              }, // for the one that does match the action, return it as-is but add action quantity
+            };
+          }
+        });
+        return newState;
+      } else {
+        //adding an item not already in the cart.
+        // console.log(`adding new item`);
+        return [...state, action.product];
+      }
+    }
+
     case CLEAR_CART:
       return [];
     case REMOVE_ITEM_FROM_CART:

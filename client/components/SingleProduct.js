@@ -10,7 +10,7 @@ export default function () {
   useEffect(() => {
     dispatch(getProduct(Number(productId)));
   }, []);
-  const singleProduct = useSelector((state) => state.singleProduct);
+  const { singleProduct, cart } = useSelector((state) => state);
   const userId = useSelector((state) => state.auth.id);
   // console.log(singleProduct);
   return (

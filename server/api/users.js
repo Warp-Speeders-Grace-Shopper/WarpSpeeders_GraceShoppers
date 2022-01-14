@@ -69,9 +69,9 @@ router.post('/:userId/addToCart', async (req, res, next) => {
   try {
     const { productId, quantity = 1 } = req.body;
     const { userId } = req.params;
-    console.log(
-      red(`grabbed productId of ${productId}, quantity of ${quantity}`)
-    );
+    // console.log(
+    //   red(`grabbed productId of ${productId}, quantity of ${quantity}`)
+    // );
     //grab productId and quantity from the request body. this is extensible to handle additional options
 
     let currentUserOrder = await Order.findOne({
@@ -90,7 +90,31 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     // console.log(yellow(`currentProduct grabbed as:`));
     // console.dir(currentProduct);
 
+    // console.log(Object.keys(currentUserOrder.__proto__));
     // need to add an IF statement:
+    // if (await currentUserOrder.hasProduct(productId)) {
+    //   console.log(
+    //     yellow(`looks like that item is already in your cart. incrementing...`)
+    //   );
+    //   const user = awaitUser.findByPk(userId)
+    //   const orderProductRow = Order_Product.findOne({where: {productId}})
+    //   // const products = await currentUserOrder.getProducts(
+    //   //   {
+    //   //     where: { id: productId },
+    //   //   },
+    //   //   { include: Order_Product }
+    //   // );
+    //   console.dir(products[0]);
+    //   const currentProduct = products[0];
+    //   await currentProduct.update({Order_Product:{quantity:}})
+    //   const currentProduct = products[0];
+    //   const orders = await currentProduct.getOrders();
+    //   const orderInCart = await orders[0].Order_Product;
+    //   console.dir(orderInCart);
+    //   console.log(Object.keys(orderInCart.__proto__));
+    //   await orderInCart.increment('quantity');
+    // }
+
     // if the product already exists in the cart, currentItemInCart.increment('quantity')
     // if it doesn't, continue with this line below:
     await currentUserOrder.addProduct(currentProduct, {
