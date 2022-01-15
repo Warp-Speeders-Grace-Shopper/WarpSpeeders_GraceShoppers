@@ -39,3 +39,7 @@ tfoot {
 tr:nth-child(even) {
   background-color: rgb(197, 238, 197);
 }
+
+.bg-Green {
+  background-color: green;
+}
