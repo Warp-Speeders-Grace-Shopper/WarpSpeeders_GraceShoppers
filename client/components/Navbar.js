@@ -1,57 +1,47 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { logout } from '../store';
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { logout } from "../store";
 
-const Navbar = ({ handleClick, isLoggedIn, isAdmin }) => (
-  <div>
-    <h1>FS-App-Template</h1>
-    <nav>
-      {isLoggedIn ? (
-        <div>
-          {/* The navbar will show these links after you log in */}
-          <Link to="/home">Home</Link>
-          <Link to="/products">Products</Link>
+const Navbar = () => {
+  const { isLoggedIn, isAdmin } = useSelector((state) => {
+    return {
+      isLoggedIn: !!state.auth.id,
+      isAdmin: state.auth.type === "admin",
+    };
+  });
 
-          {isAdmin && <Link to="/admin">Admin</Link>}
+  const dispatch = useDispatch();
 
-          <Link to="/cart">My Cart</Link>
+  return (
+    <div>
+      <Link to="/">
+        <h1>House of Plants</h1>
+      </Link>
 
-
-          <a href="#" onClick={handleClick}>
-            Logout
-          </a>
-        </div>
-      ) : (
-        <div>
-          {/* The navbar will show these links before you log in */}
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
-          <Link to="/products">Products</Link>
-          <Link to="/cart">My Cart</Link>
-        </div>
-      )}
-    </nav>
-    <hr />
-  </div>
-);
-
-/**
- * CONTAINER
- */
-const mapState = (state) => {
-  return {
-    isLoggedIn: !!state.auth.id,
-    isAdmin: state.auth.type === "admin"
-  };
+      <nav>
+        <Link to="/products">Products</Link>
+        {isLoggedIn ? (
+          <div>
+            {/* The navbar will show these links after you log in */}
+            <Link to="/home">Home</Link>
+            {isAdmin && <Link to="/admin">Admin</Link>}
+            <a href="#" onClick={() => dispatch(logout())}>
+              Logout
+            </a>
+          </div>
+        ) : (
+          <div>
+            {/* The navbar will show these links before you log in */}
+            <Link to="/login">Login</Link>
+            <Link to="/signup">Sign Up</Link>
+          </div>
+        )}
+        <Link to="/cart">My Cart</Link>
+      </nav>
+      <hr />
+    </div>
+  );
 };
 
-const mapDispatch = (dispatch) => {
-  return {
-    handleClick() {
-      dispatch(logout());
-    },
-  };
-};
-
-export default connect(mapState, mapDispatch)(Navbar);
+export default Navbar;
