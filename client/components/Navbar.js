@@ -22,27 +22,37 @@ const Menu = () => {
   const dispatch = useDispatch();
 
   return (
-    <div>
-      <Navbar bg="Green" sticky="top" expand="md" collapseOnSelect>
-        <Container fluid>
-          <Navbar.Brand>
-            <Nav.Link as={Link} to="/">
-              House of Plants
-            </Nav.Link>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+    <Navbar
+      collapseOnSelect
+      bg="Green"
+      sticky="top"
+      expand="md"
+      className="py-sm py-0"
+    >
+      <Container fluid>
+        <Nav className="flex-row justify-content-evenly">
+          <Nav.Link as={Link} to="/">
+            House of Plants
+          </Nav.Link>
+          <Form className="d-flex h-25 w-50 mt-3 mb-3">
+            <Form.Control
+              type="search"
+              placeholder="Find"
+              aria-label="Search"
+              className="me-2"
+            />
+            <Button variant="light">Search</Button>
+          </Form>
+        </Nav>
 
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Form className="d-flex">
-              <Form.Control
-                type="search"
-                placeholder="Find"
-                className="me-2"
-                aria-label="Search"
-              />
-              <Button variant="light">Search</Button>
-            </Form>
-            <Nav>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+
+        <Navbar.Collapse
+          id="responsive-navbar-nav"
+          className="justify-content-between"
+        >
+          <Nav>
+            <Nav.Item className="d-flex flex-row">
               <Nav.Item>
                 <NavDropdown title="Products">
                   <NavDropdown.Item as={Link} to="/products">
@@ -59,45 +69,46 @@ const Menu = () => {
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav.Item>
-              <Nav.Item>
-                <Nav.Link as={Link} to="/cart">
-                  My Cart
+            </Nav.Item>
+          </Nav>
+
+          <Nav.Item className="d-flex flex-row">
+            <Nav.Item>
+              <Nav.Link as={Link} to="/cart">
+                My Cart
+              </Nav.Link>
+            </Nav.Item>
+
+            {isLoggedIn ? (
+              <Nav.Item className="d-flex flex-row">
+                {/* The navbar will show these links after you log in */}
+                <Nav.Link as={Link} to="/home">
+                  Home
+                </Nav.Link>
+                {isAdmin && (
+                  <Nav.Link as={Link} to="/admin">
+                    Admin
+                  </Nav.Link>
+                )}
+                <a to="#" onClick={() => dispatch(logout())}>
+                  Logout
+                </a>
+              </Nav.Item>
+            ) : (
+              <Nav.Item className="d-flex flex-row">
+                {/* The navbar will show these links before you log in */}
+                <Nav.Link as={Link} to="/login">
+                  Login
+                </Nav.Link>
+                <Nav.Link as={Link} to="/signup">
+                  Sign Up
                 </Nav.Link>
               </Nav.Item>
-              <Nav />
-              <Nav.Item>
-                {isLoggedIn ? (
-                  <Nav>
-                    {/* The navbar will show these links after you log in */}
-                    <Nav.Link as={Link} to="/home">
-                      Home
-                    </Nav.Link>
-                    {isAdmin && (
-                      <Nav.Link as={Link} to="/admin">
-                        Admin
-                      </Nav.Link>
-                    )}
-                    <a to="#" onClick={() => dispatch(logout())}>
-                      Logout
-                    </a>
-                  </Nav>
-                ) : (
-                  <Nav>
-                    {/* The navbar will show these links before you log in */}
-                    <Nav.Link as={Link} to="/login">
-                      Login
-                    </Nav.Link>
-                    <Nav.Link as={Link} to="/signup">
-                      Sign Up
-                    </Nav.Link>
-                  </Nav>
-                )}
-              </Nav.Item>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </div>
+            )}
+          </Nav.Item>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 

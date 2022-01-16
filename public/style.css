@@ -43,3 +43,7 @@ tr:nth-child(even) {
 .bg-Green {
   background-image: linear-gradient(#a9f6a8, #008002);
 }
+
+.bg-red {
+  background-color: red;
+}
