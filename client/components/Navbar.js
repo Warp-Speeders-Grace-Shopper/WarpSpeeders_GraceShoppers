@@ -28,7 +28,6 @@ const Menu = () => {
       sticky="top"
       expand="md"
       className="py-sm py-0"
-      variant="dark"
     >
       <Container fluid>
         <Navbar.Brand as={Link} to="/">
@@ -78,9 +77,9 @@ const Menu = () => {
                     Admin
                   </Nav.Link>
                 )}
-                <a to="#" onClick={() => dispatch(logout())}>
+                <Nav.Link as={Link} to="#" onClick={() => dispatch(logout())}>
                   Logout
-                </a>
+                </Nav.Link>
               </Nav>
             ) : (
               <Nav>
