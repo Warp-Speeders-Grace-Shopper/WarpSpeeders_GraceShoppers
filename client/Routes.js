@@ -10,6 +10,7 @@ import CartView from './components/CartView';
 import AdminProductPanel from './components/AdminProductPanel';
 import EditProduct from './components/EditProduct';
 import OrderThankYou from './components/OrderThankYou';
+import LandingPage from "./components/LandingPage";
 
 /**
  * COMPONENT
@@ -39,13 +40,14 @@ class Routes extends Component {
             {isAdmin && (
               <Route path="/products/edit/:productId" component={EditProduct} />
             )}
+            <Route path="/" exact component={LandingPage} />
             <Redirect to="/home" />
           </Switch>
         ) : (
           <Switch>
             <Route path="/products" exact component={AllProducts} />
             <Route path="/products/:productId" component={SingleProduct} />
-            <Route path="/" exact component={Login} />
+            <Route path="/" exact component={LandingPage} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/cart" component={CartView} />
@@ -66,6 +68,7 @@ const mapState = (state) => {
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
     isLoggedIn: !!state.auth.id,
     isAdmin: state.auth.type === 'admin',
+
   };
 };
 

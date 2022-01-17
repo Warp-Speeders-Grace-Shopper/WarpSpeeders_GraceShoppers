@@ -39,3 +39,11 @@ tfoot {
 tr:nth-child(even) {
   background-color: rgb(197, 238, 197);
 }
+
+.bg-Green {
+  background-image: linear-gradient(#a9f6a8, #008002);
+}
+
+.bg-red {
+  background-color: red;
+}
