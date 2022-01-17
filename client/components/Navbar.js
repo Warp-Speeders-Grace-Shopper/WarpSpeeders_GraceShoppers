@@ -72,7 +72,7 @@ const Menu = () => {
             </Nav.Item>
           </Nav>
 
-          <Nav.Item className="d-flex flex-row">
+          <Nav className="d-flex flex-row">
             <Nav.Item>
               <Nav.Link as={Link} to="/cart">
                 My Cart
@@ -105,7 +105,7 @@ const Menu = () => {
                 </Nav.Link>
               </Nav.Item>
             )}
-          </Nav.Item>
+          </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
