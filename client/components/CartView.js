@@ -9,6 +9,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
+import history from '../history';
 
 const CartView = () => {
   const [editMode, toggleEditMode] = useState(false);
@@ -38,6 +39,7 @@ const CartView = () => {
 
   function handleBuyCart(userId = 0) {
     dispatch(buyCart(userId));
+    history.push('/thankYou');
   }
 
   return (
@@ -47,46 +49,51 @@ const CartView = () => {
           <Col>
             <h1>Cart for {username || 'Guest'}</h1>
           </Col>
-          <Col className="me-auto">
-            {editMode ? (
-              <Button variant="success" disabled>
-                Buy Now
-              </Button>
-            ) : (
-              <Button variant="success" onClick={() => handleBuyCart(id)}>
-                Buy Now
-              </Button>
-            )}
-            <ButtonGroup className="ms-auto">
+
+          {cart[0] ? (
+            <Col className="me-auto">
               {editMode ? (
-                <Button
-                  onClick={() => {
-                    console.log(
-                      `this button should dispatch an action to update the user's cart!`
-                    );
-                    toggleEditMode(!editMode);
-                  }}
-                >
-                  {/* this button should update cart. i think it's easiest to pass the whole cart object to it*/}
-                  Save Cart
+                <Button variant="success" disabled>
+                  Buy Now
                 </Button>
               ) : (
-                <Button
-                  variant="warning"
-                  onClick={() => toggleEditMode(!editMode)}
-                >
-                  Edit Quantities
+                <Button variant="success" onClick={() => handleBuyCart(id)}>
+                  Buy Now
                 </Button>
               )}
-              <Button
-                variant="danger"
-                style={{ maxWidth: '8rem' }}
-                onClick={() => handleClearCart(id)}
-              >
-                Clear Cart
-              </Button>
-            </ButtonGroup>
-          </Col>
+              <ButtonGroup className="ms-auto">
+                {editMode ? (
+                  <Button
+                    onClick={() => {
+                      console.log(
+                        `this button should dispatch an action to update the user's cart!`
+                      );
+                      toggleEditMode(!editMode);
+                    }}
+                  >
+                    {/* this button should update cart. i think it's easiest to pass the whole cart object to it*/}
+                    Save Cart
+                  </Button>
+                ) : (
+                  <Button
+                    variant="warning"
+                    onClick={() => toggleEditMode(!editMode)}
+                  >
+                    Edit Quantities
+                  </Button>
+                )}
+                <Button
+                  variant="danger"
+                  style={{ maxWidth: '8rem' }}
+                  onClick={() => handleClearCart(id)}
+                >
+                  Clear Cart
+                </Button>
+              </ButtonGroup>
+            </Col>
+          ) : (
+            ' '
+          )}
         </Row>
 
         <div>
@@ -128,13 +135,13 @@ const CartView = () => {
                             cartItem.Order_Product.quantity
                           )}
                         </td>
-                        <td>${cartItem.price / 100}</td> {/*price per item */}
+                        <td>${cartItem.price / 100}</td>
                         <td>
                           $
                           {(cartItem.price / 100) *
                             cartItem.Order_Product.quantity}
                         </td>
-                        {/*subtotal for this item */}
+
                         <td>
                           <Button
                             variant="outline-danger"

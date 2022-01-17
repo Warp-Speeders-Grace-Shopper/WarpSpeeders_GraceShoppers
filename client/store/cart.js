@@ -98,7 +98,13 @@ export const removeItemFromCart = (product, userId) => async (dispatch) => {
 export const buyCart = (userId) => async (dispatch) => {
   if (userId != 0) {
     // if logged-in user, set their cart to "closed" in db.
+    try {
+      await axios.post(`/api/users/${userId}/buyCart`);
+    } catch (error) {
+      console.log(`error in the getCart thunk: ${error}`);
+    }
   }
+  // whether logged-in or not, clear redux cart.
   dispatch(_clearCart());
 };
 
