@@ -12,7 +12,7 @@ const _getCart = (cart) => {
   return { type: GET_CART, cart };
 };
 
-const _clearCart = () => {
+export const _clearCart = () => {
   return { type: CLEAR_CART };
 };
 
