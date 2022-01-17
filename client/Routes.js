@@ -9,6 +9,7 @@ import AllProducts from './components/AllProducts';
 import CartView from './components/CartView';
 import AdminProductPanel from './components/AdminProductPanel';
 import EditProduct from './components/EditProduct';
+import OrderThankYou from './components/OrderThankYou';
 
 /**
  * COMPONENT
@@ -26,11 +27,18 @@ class Routes extends Component {
         {isLoggedIn ? (
           <Switch>
             <Route path="/products" exact component={AllProducts} />
-            <Route path="/products/:productId" exact component={SingleProduct} />
+            <Route
+              path="/products/:productId"
+              exact
+              component={SingleProduct}
+            />
             <Route path="/cart" component={CartView} />
             <Route path="/home" component={Home} />
+            <Route path="/thankYou" component={OrderThankYou} />
             {isAdmin && <Route path="/admin" component={AdminProductPanel} />}
-            {isAdmin && <Route path="/products/edit/:productId" component={EditProduct} />}
+            {isAdmin && (
+              <Route path="/products/edit/:productId" component={EditProduct} />
+            )}
             <Redirect to="/home" />
           </Switch>
         ) : (
@@ -41,6 +49,7 @@ class Routes extends Component {
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/cart" component={CartView} />
+            <Route path="/thankYou" component={OrderThankYou} />
           </Switch>
         )}
       </div>
@@ -56,7 +65,7 @@ const mapState = (state) => {
     // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
     isLoggedIn: !!state.auth.id,
-    isAdmin: state.auth.type === "admin"
+    isAdmin: state.auth.type === 'admin',
   };
 };
 
