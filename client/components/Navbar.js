@@ -1,7 +1,7 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { logout } from "../store";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { logout } from '../store';
 import {
   Navbar,
   Nav,
@@ -9,13 +9,13 @@ import {
   Container,
   Form,
   Button,
-} from "react-bootstrap";
+} from 'react-bootstrap';
 
 const Menu = () => {
   const { isLoggedIn, isAdmin } = useSelector((state) => {
     return {
       isLoggedIn: !!state.auth.id,
-      isAdmin: state.auth.type === "admin",
+      isAdmin: state.auth.type === 'admin',
     };
   });
 
@@ -28,51 +28,39 @@ const Menu = () => {
       sticky="top"
       expand="md"
       className="py-sm py-0"
+      variant="dark"
     >
       <Container fluid>
-        <Nav className="flex-row justify-content-evenly">
-          <Nav.Link as={Link} to="/">
-            House of Plants
-          </Nav.Link>
-          <Form className="d-flex h-25 w-50 mt-3 mb-3">
-            <Form.Control
-              type="search"
-              placeholder="Find"
-              aria-label="Search"
-              className="me-2"
-            />
-            <Button variant="light">Search</Button>
-          </Form>
-        </Nav>
-
+        <Navbar.Brand as={Link} to="/">
+          House of Plants
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
 
-        <Navbar.Collapse
-          id="responsive-navbar-nav"
-          className="justify-content-between"
-        >
-          <Nav>
-            <Nav.Item className="d-flex flex-row">
-              <Nav.Item>
-                <NavDropdown title="Products">
-                  <NavDropdown.Item as={Link} to="/products">
-                    All
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/products/plants">
-                    Plants
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/products/tools">
-                    Tools
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/products/apparel">
-                    Apparel
-                  </NavDropdown.Item>
-                </NavDropdown>
-              </Nav.Item>
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Item>
+              <NavDropdown title="Products">
+                <NavDropdown.Item
+                  as={Link}
+                  to="/products"
+                  id="collasible-nav-dropdown"
+                >
+                  All
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/products">
+                  Plants
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/products">
+                  Tools
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/products">
+                  Apparel
+                </NavDropdown.Item>
+              </NavDropdown>
             </Nav.Item>
           </Nav>
 
-          <Nav className="d-flex flex-row">
+          <Nav>
             <Nav.Item>
               <Nav.Link as={Link} to="/cart">
                 My Cart
@@ -80,7 +68,7 @@ const Menu = () => {
             </Nav.Item>
 
             {isLoggedIn ? (
-              <Nav.Item className="d-flex flex-row">
+              <Nav>
                 {/* The navbar will show these links after you log in */}
                 <Nav.Link as={Link} to="/home">
                   Home
@@ -93,9 +81,9 @@ const Menu = () => {
                 <a to="#" onClick={() => dispatch(logout())}>
                   Logout
                 </a>
-              </Nav.Item>
+              </Nav>
             ) : (
-              <Nav.Item className="d-flex flex-row">
+              <Nav>
                 {/* The navbar will show these links before you log in */}
                 <Nav.Link as={Link} to="/login">
                   Login
@@ -103,7 +91,7 @@ const Menu = () => {
                 <Nav.Link as={Link} to="/signup">
                   Sign Up
                 </Nav.Link>
-              </Nav.Item>
+              </Nav>
             )}
           </Nav>
         </Navbar.Collapse>
