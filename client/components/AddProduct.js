@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../store/products";
+import { Container, Accordion, Card, Form, Col, Button, Alert } from 'react-bootstrap'
 
 const AdminProductPanel = ({ toggleAddProduct }) => {
   const dispatch = useDispatch();
@@ -45,6 +46,16 @@ const AdminProductPanel = ({ toggleAddProduct }) => {
 
   return (
     <div>
+      <Form onSubmit={handleSubmit}>
+        <Form.Row>
+          <Form.Group >
+            <Form.Label>Name</Form.Label>
+            <Form.Control>
+
+            </Form.Control>
+          </Form.Group>
+        </Form.Row>
+      </Form>
       <h3>Add New Product</h3>
       <form onSubmit={handleSubmit}>
         <button type="button" onClick={handleCancel}>

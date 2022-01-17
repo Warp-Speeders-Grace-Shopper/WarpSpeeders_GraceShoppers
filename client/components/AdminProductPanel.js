@@ -3,6 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { getProducts } from "../store/products";
 import AddProduct from "./AddProduct";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 
 const AdminProductPanel = () => {
   const products = useSelector((state) => state.products);
@@ -18,29 +23,33 @@ const AdminProductPanel = () => {
   };
 
   return (
-    <div>
-      <h2>Admin Product Panel</h2>
-      {!showAddProduct && (
-        <button onClick={toggleAddProduct}>Add Product</button>
-      )}
-      {showAddProduct && <AddProduct toggleAddProduct={toggleAddProduct} />}
-      {products.length && (
-        <div>
-          {products.map((product, i) => {
-            return (
-              <div key={i}>
-                <img src={product.imageUrl} style={{ maxWidth: "10rem" }} />
-                <div>{product.name}</div>
-                <div>${product.price}</div>
-                <Link to={`/products/edit/${product.id}`}>
-                  <button>Edit</button>
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+    <Container fluid>
+        <h2>Admin Product Panel</h2>
+        {!showAddProduct && (
+          <button onClick={toggleAddProduct}>Add Product</button>
+        )}
+        {showAddProduct && <AddProduct toggleAddProduct={toggleAddProduct} />}
+        {products.length && (
+          <Row>
+            {products.map((product) => {
+              return (
+                <Col key={product.id} xs={3}>
+                  <Card style={{ width: "18rem" }}>
+                    <Card.Img variant="top" src={product.imageUrl} />
+                    <Card.Body>
+                      <Card.Title>{product.name}</Card.Title>
+                      <Card.Text>${product.price}</Card.Text>
+                      <Link to={`/products/edit/${product.id}`}>
+                        <Button variant="primary">Edit</Button>
+                      </Link>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
+        )}
+    </Container>
   );
 };
 
