@@ -12,23 +12,15 @@ import Button from "react-bootstrap/Button";
 const AdminProductPanel = () => {
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
-  const [showAddProduct, setShowAddProduct] = useState(false);
 
   useEffect(() => {
     dispatch(getProducts());
   }, []);
 
-  const toggleAddProduct = () => {
-    setShowAddProduct(!showAddProduct);
-  };
-
   return (
     <Container fluid>
         <h2>Admin Product Panel</h2>
-        {!showAddProduct && (
-          <button onClick={toggleAddProduct}>Add Product</button>
-        )}
-        {showAddProduct && <AddProduct toggleAddProduct={toggleAddProduct} />}
+        <AddProduct/>
         {products.length && (
           <Row>
             {products.map((product) => {

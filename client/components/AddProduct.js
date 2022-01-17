@@ -1,9 +1,19 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../store/products";
-import { Container, Accordion, Card, Form, Col, Button, Alert } from 'react-bootstrap'
+import Container from "react-bootstrap/Container";
+import Accordion from "react-bootstrap/Accordion";
+import Form from "react-bootstrap/Form";
+import FormGroup from "react-bootstrap/FormGroup";
+import FormLabel from "react-bootstrap/FormLabel";
+import FormControl from "react-bootstrap/FormControl";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import AccordionItem from "react-bootstrap/esm/AccordionItem";
 
-const AdminProductPanel = ({ toggleAddProduct }) => {
+const AdminProductPanel = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
@@ -13,17 +23,8 @@ const AdminProductPanel = ({ toggleAddProduct }) => {
     description: "",
   });
 
-  const handleCancel = () => {
-    setFormData({
-      name: "",
-      price: "",
-      imageUrl: "",
-      type: "",
-      description: "",
-    });
-    toggleAddProduct();
-  };
   const handleChange = (e) => {
+    console.log(formData);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -31,6 +32,7 @@ const AdminProductPanel = ({ toggleAddProduct }) => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("New item added: ", formData);
     dispatch(addProduct(formData));
     setFormData({
       name: "",
@@ -46,20 +48,72 @@ const AdminProductPanel = ({ toggleAddProduct }) => {
 
   return (
     <div>
-      <Form onSubmit={handleSubmit}>
-        <Form.Row>
-          <Form.Group >
-            <Form.Label>Name</Form.Label>
-            <Form.Control>
-
-            </Form.Control>
-          </Form.Group>
-        </Form.Row>
-      </Form>
-      <h3>Add New Product</h3>
-      <form onSubmit={handleSubmit}>
+      <Accordion>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>Add Product</Accordion.Header>
+          <Accordion.Body>
+            <Form onSubmit={handleSubmit}>
+              <FormGroup as={Row} controlId="formGridName">
+                <FormLabel>Name</FormLabel>
+                <FormControl
+                  type="text"
+                  name="name"
+                  onChange={handleChange}
+                  value={name}
+                />
+              </FormGroup>
+              <FormGroup as={Row} controlId="formGridPrice">
+                <FormLabel>Price</FormLabel>
+                <FormControl
+                  type="text"
+                  name="price"
+                  onChange={handleChange}
+                  value={price}
+                />
+              </FormGroup>
+              <FormGroup as={Row} controlId="formGridImageUrl">
+                <FormLabel>Image URL</FormLabel>
+                <FormControl
+                  type="text"
+                  name="imageUrl"
+                  onChange={handleChange}
+                  value={imageUrl}
+                />
+              </FormGroup>
+              <Form.Group as={Row} controlId="formGridType">
+                <Form.Label>Type</Form.Label>
+                <Form.Select
+                  name="type"
+                  defaultValue="plant"
+                  onChange={handleChange}
+                  value={type}
+                >
+                  <option value="plant">Plant</option>
+                  <option value="pot">Pot</option>
+                  <option value="tool">Tool</option>
+                  <option value="apparel">Apparel</option>
+                </Form.Select>
+              </Form.Group>
+              <Form.Group as={Row} controlId="formGridDescription">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  name="description"
+                  onChange={handleChange}
+                  value={description}
+                />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
+      {/* <form onSubmit={handleSubmit}>
         <button type="button" onClick={handleCancel}>
-          Cancel
+        Cancel
         </button>
         <label htmlFor="name">Name</label>
         <input name="name" onChange={handleChange} value={name} />
@@ -83,7 +137,7 @@ const AdminProductPanel = ({ toggleAddProduct }) => {
           cols="50"
         />
         <button type="submit">Submit</button>
-      </form>
+      </form> */}
     </div>
   );
 };
