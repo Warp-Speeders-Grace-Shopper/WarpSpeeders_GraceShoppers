@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios from 'axios';
 
 //Action Types
 
-const GET_PRODUCTS = "GET_PRODUCTS";
-const ADD_PRODUCT = "ADD_PRODUCT";
-const DELETE_PRODUCT = "DELETE_PRODUCT";
-const EDIT_PRODUCT = "EDIT_PRODUCT";
+const GET_PRODUCTS = 'GET_PRODUCTS';
+const ADD_PRODUCT = 'ADD_PRODUCT';
+const DELETE_PRODUCT = 'DELETE_PRODUCT';
+const EDIT_PRODUCT = 'EDIT_PRODUCT';
 
 //Action Creators
 
@@ -34,7 +34,7 @@ const _editProduct = (product) => ({
 export const getProducts = () => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get("/api/products");
+      const { data } = await axios.get('/api/products');
       dispatch(_getProducts(data));
     } catch (err) {
       console.log(err);
@@ -45,7 +45,7 @@ export const getProducts = () => {
 export const addProduct = (product) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.post("/api/products", product);
+      const { data } = await axios.post('/api/products', product);
       dispatch(_addProduct(data));
     } catch (err) {
       console.log(err);
@@ -86,10 +86,10 @@ export default function products(state = initialState, action) {
     case ADD_PRODUCT:
       return [...state, action.product];
     case DELETE_PRODUCT:
-      return state.filter(product => product.id !== action.productId);
+      return state.filter((product) => product.id !== action.productId);
     case EDIT_PRODUCT:
-      return state.map(product => {
-        return product.id === action.product.id ? action.product : product
+      return state.map((product) => {
+        return product.id === action.product.id ? action.product : product;
       });
     default:
       return state;
