@@ -18,7 +18,7 @@ const AdminProductPanel = () => {
     name: "",
     price: "",
     imageUrl: "",
-    type: "",
+    type: "plant",
     description: "",
   });
 
@@ -37,7 +37,7 @@ const AdminProductPanel = () => {
       name: "",
       price: "",
       imageUrl: "",
-      type: "",
+      type: "plant",
       description: "",
     });
   };
