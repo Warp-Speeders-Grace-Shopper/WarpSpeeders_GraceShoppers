@@ -10,6 +10,10 @@ import CartView from './components/CartView';
 import AdminProductPanel from './components/AdminProductPanel';
 import EditProduct from './components/EditProduct';
 import LandingPage from './components/LandingPage';
+import Plants from './components/Plants';
+import Tools from './components/Tools';
+import Apparel from './components/Apparel';
+import Pots from './components/Pots';
 
 /**
  * COMPONENT For Routes
@@ -27,6 +31,10 @@ class Routes extends Component {
         {isLoggedIn ? (
           <Switch>
             <Route path="/products" exact component={AllProducts} />
+            <Route path="/plants" exact component={Plants} />
+            <Route path="/pots" exact component={Pots} />
+            <Route path="/tools" exact component={Tools} />
+            <Route path="/apparel" exact component={Apparel} />
             <Route
               path="/products/:productId"
               exact
@@ -44,6 +52,10 @@ class Routes extends Component {
         ) : (
           <Switch>
             <Route path="/products" exact component={AllProducts} />
+            <Route path="/plants" exact component={Plants} />
+            <Route path="/pots" exact component={Pots} />
+            <Route path="/tools" exact component={Tools} />
+            <Route path="/apparel" exact component={Apparel} />
             <Route path="/products/:productId" component={SingleProduct} />
             <Route path="/" exact component={LandingPage} />
             <Route path="/login" component={Login} />
