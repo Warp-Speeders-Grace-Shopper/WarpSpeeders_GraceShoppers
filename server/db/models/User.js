@@ -19,6 +19,14 @@ const User = db.define('user', {
     type: Sequelize.ENUM("customer", "admin"),
     defaultValue: "customer",
   },
+  email: {
+    type: Sequelize.STRING,
+    //unique: true,
+    validate: {
+      isEmail: true
+    },
+    defaultValue: "email@email.com"
+  }
 })
 
 module.exports = User
