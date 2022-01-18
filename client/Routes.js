@@ -9,6 +9,7 @@ import AllProducts from './components/AllProducts';
 import CartView from './components/CartView';
 import AdminProductPanel from './components/AdminProductPanel';
 import EditProduct from './components/EditProduct';
+import OrderThankYou from './components/OrderThankYou';
 import LandingPage from './components/LandingPage';
 import Plants from './components/Plants';
 import Tools from './components/Tools';
@@ -42,6 +43,7 @@ class Routes extends Component {
             />
             <Route path="/cart" component={CartView} />
             <Route path="/home" component={Home} />
+            <Route path="/thankYou" component={OrderThankYou} />
             {isAdmin && <Route path="/admin" component={AdminProductPanel} />}
             {isAdmin && (
               <Route path="/products/edit/:productId" component={EditProduct} />
@@ -61,6 +63,7 @@ class Routes extends Component {
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/cart" component={CartView} />
+            <Route path="/thankYou" component={OrderThankYou} />
           </Switch>
         )}
       </div>

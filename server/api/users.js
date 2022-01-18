@@ -79,39 +79,26 @@ router.post('/:userId/addToCart', async (req, res, next) => {
     }
     // note: findOrCreate() should be a substitute for the above two actions, but it's not working.
 
-    const currentProduct = await Product.findByPk(productId);
-    // console.log(`currentProduct grabbed as:`);
-    // console.dir(currentProduct);
+    // grab the id of the cart, basically:
+    const currentOrderId = currentUserOrder.id;
 
-    // console.log(Object.keys(currentUserOrder.__proto__));
-    // need to add an IF statement:
-    // if (await currentUserOrder.hasProduct(productId)) {
-    //   console.log(
-    //     `looks like that item is already in your cart. incrementing...`
-    //   );
-    //   const user = awaitUser.findByPk(userId)
-    //   const orderProductRow = Order_Product.findOne({where: {productId}})
-    //   // const products = await currentUserOrder.getProducts(
-    //   //   {
-    //   //     where: { id: productId },
-    //   //   },
-    //   //   { include: Order_Product }
-    //   // );
-    //   console.dir(products[0]);
-    //   const currentProduct = products[0];
-    //   await currentProduct.update({Order_Product:{quantity:}})
-    //   const currentProduct = products[0];
-    //   const orders = await currentProduct.getOrders();
-    //   const orderInCart = await orders[0].Order_Product;
-    //   console.dir(orderInCart);
-    //   console.log(Object.keys(orderInCart.__proto__));
-    //   await orderInCart.increment('quantity');
-    // }
-
-    // add qty of currentProduct to current user's order in db
-    await currentUserOrder.addProduct(currentProduct, {
-      through: { quantity },
+    // try to find this item in the cart
+    const currentOrderProductsLineItem = await Order_Product.findOne({
+      where: { orderId: currentOrderId, productId },
     });
+
+    if (!currentOrderProductsLineItem) {
+      // if that item is not already in the cart, ADD IT:
+      await currentUserOrder.addProduct(productId, {
+        through: { quantity },
+      });
+    } else {
+      // but if the item already is in the current order, update the quantity:
+      console.log(`that item is already in the cart so i'll update qty`);
+      await currentOrderProductsLineItem.increment('quantity', {
+        by: quantity,
+      });
+    }
 
     const productAddedToCart = await currentUserOrder.getProducts({
       where: { id: productId },
@@ -160,6 +147,21 @@ router.delete('/:userId/removeFromCart/:itemId', async (req, res, next) => {
     console.log(
       `error in the router.delete route to remove items from cart: ${error}`
     );
+    next(error);
+  }
+});
+
+router.post('/:userId/buyCart', async (req, res, next) => {
+  // console.log(`router post route REACHED`);
+  try {
+    await Order.update(
+      { status: 'complete' },
+      { where: { userId: req.params.userId, status: 'open' } }
+    );
+    // console.log(`order updated(?)`);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(`error in the router.post route to buy cart: ${error}`);
     next(error);
   }
 });
