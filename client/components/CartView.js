@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { clearCart, getCart, removeItemFromCart, buyCart } from "../store/cart";
 import { useDispatch, useSelector } from "react-redux";
+import { editCart } from "../store/cart";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
@@ -12,35 +13,51 @@ import Image from "react-bootstrap/Image";
 import history from "../history";
 
 const CartView = () => {
-  const [editMode, toggleEditMode] = useState(false);
+  const dispatch = useDispatch();
+  const [emailInput, setEmailInput] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
 
   const { id, username } = useSelector((state) => state.auth);
-  //grab user ID and username from state
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    // if (id) {
-    dispatch(getCart(id));
-    // }
-  }, [id]);
-  // when the page loads (and whenever user login changes), dispatch getCart
   const cart = useSelector((state) => state.cart);
-  // put that cart in local scope
 
-  function handleRemove(cartItem, userId = 0) {
-    // removes individual items from cart
+  useEffect(() => {
+    dispatch(getCart(id));
+  }, [id]);
+
+  function handleRemoveItem(cartItem, userId = 0) {
     dispatch(removeItemFromCart(cartItem, userId));
   }
 
+  const handleEdit = (e, cartItem, userId = 0) => {
+    cartItem = {
+      ...cartItem,
+      Order_Product: {
+        ...cartItem.Order_Product,
+        quantity: Number(e.target.value),
+      },
+    };
+    console.log(cartItem);
+    dispatch(editCart(cartItem, userId));
+  };
+
   function handleClearCart(userId = 0) {
-    // removes all items from user cart
     dispatch(clearCart(userId));
   }
 
-  function handleBuyCart(userId = 0) {
-    dispatch(buyCart(userId));
+  function handleBuyCart(userId = 0, email = "") {
+    dispatch(buyCart(userId, email));
     history.push("/thankYou");
   }
+
+  const handleChangeEmail = (e) => {
+    setEmailInput(e.target.value);
+  };
+
+  const handleSubmitEmail = (e) => {
+    e.preventDefault();
+    console.log(emailInput);
+    setGuestEmail(emailInput);
+  };
 
   return (
     <Card>
@@ -52,36 +69,7 @@ const CartView = () => {
 
           {cart[0] ? (
             <Col className="me-auto">
-              {editMode ? (
-                <Button variant="success" disabled>
-                  Buy Now
-                </Button>
-              ) : (
-                <Button variant="success" onClick={() => handleBuyCart(id)}>
-                  Buy Now
-                </Button>
-              )}
               <ButtonGroup className="ms-auto">
-                {editMode ? (
-                  <Button
-                    onClick={() => {
-                      console.log(
-                        `this button should dispatch an action to update the user's cart!`
-                      );
-                      toggleEditMode(!editMode);
-                    }}
-                  >
-                    {/* this button should update cart. i think it's easiest to pass the whole cart object to it*/}
-                    Save Cart
-                  </Button>
-                ) : (
-                  <Button
-                    variant="warning"
-                    onClick={() => toggleEditMode(!editMode)}
-                  >
-                    Edit Quantities
-                  </Button>
-                )}
                 <Button
                   variant="danger"
                   style={{ maxWidth: "8rem" }}
@@ -126,14 +114,19 @@ const CartView = () => {
                           </a>
                         </td>
                         <td>
-                          {editMode ? (
-                            <input
-                              type="text"
-                              defaultValue={cartItem.Order_Product.quantity}
-                            />
-                          ) : (
-                            cartItem.Order_Product.quantity
-                          )}
+                          <select
+                            name="quantity"
+                            onChange={(e) => handleEdit(e, cartItem, id)}
+                            value={cartItem.Order_Product.quantity}
+                          >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="5">10</option>
+                            <option value="5">25</option>
+                          </select>
                         </td>
                         <td>${cartItem.price / 100}</td>
                         <td>
@@ -145,9 +138,9 @@ const CartView = () => {
                         <td>
                           <Button
                             variant="outline-danger"
-                            onClick={() => handleRemove(cartItem, id)}
+                            onClick={() => handleRemoveItem(cartItem, id)}
                           >
-                            X remove
+                            Remove
                           </Button>
                         </td>
                       </tr>
@@ -186,23 +179,30 @@ const CartView = () => {
                       </h3>
                     </td>
                     <td>
-                      {" "}
-                      {editMode ? (
-                        <Button variant="success" disabled>
-                          Buy Now
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="success"
-                          onClick={() => handleBuyCart(id)}
-                        >
-                          Buy Now
-                        </Button>
-                      )}
+                      <Button
+                        variant="success"
+                        onClick={() => handleBuyCart(id, guestEmail)}
+                        disabled={!id && !guestEmail}
+                      >
+                        Buy Now
+                      </Button>
                     </td>
                   </tr>
                 </tfoot>
               </Table>
+              {!id && !guestEmail && (
+                <div>Please enter email below to check out as guest!</div>
+              )}
+              <form onSubmit={handleSubmitEmail}>
+                <label htmlFor="email">Email: </label>
+                <input
+                  type="text"
+                  name="email"
+                  value={emailInput}
+                  onChange={handleChangeEmail}
+                ></input>
+                <button type='submit'>Submit</button>
+              </form>
             </Container>
           ) : (
             "Cart is empty. Buy some stuff!"

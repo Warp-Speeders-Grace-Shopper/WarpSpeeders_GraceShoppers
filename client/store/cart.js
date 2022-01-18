@@ -5,6 +5,7 @@ const GET_CART = "GET_CART";
 const ADD_TO_CART = "ADD_TO_CART";
 const CLEAR_CART = "CLEAR_CART";
 const REMOVE_ITEM_FROM_CART = "REMOVE_ITEM_FROM_CART";
+const EDIT_CART = "EDIT_CART";
 const BUY_CART = "BUY_CART";
 
 // action creator(s):
@@ -22,6 +23,10 @@ const _addToCart = (product) => {
 
 const _removeItemFromCart = (product) => {
   return { type: REMOVE_ITEM_FROM_CART, product };
+};
+
+const _editCart = (product) => {
+  return { type: EDIT_CART, product };
 };
 
 // there is no buyCart action creator -- clearCart is used instead.
@@ -125,13 +130,49 @@ export const removeItemFromCart = (product, userId) => async (dispatch) => {
   }
 };
 
-export const buyCart = (userId) => async (dispatch) => {
-  if (userId != 0) {
+export const editCart = (product, userId) => async (dispatch) => {
+  try {
+    // if Guest
+    if (!userId) {
+      // Check if cart exists in localStorage
+      // If cart not exists, create new cart array
+      let cart = JSON.parse(window.localStorage.getItem("cart"));
+      // Check if product exists in cart
+      // If exists, increment qty
+     cart.find(
+        (lineItem) => lineItem.id === product.id
+      ).Order_Product.quantity = product.Order_Product.quantity;
+      // Save new cart to localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
+      // dispatch(_addToCart(newItem));
+    } else {
+      // if Customer
+      const axiosResponse = await axios.put(
+        `/api/users/${userId}/editCart`,
+        product
+      );
+    }
+    dispatch(_editCart(product));
+  } catch (error) {
+    console.log(`error in the addToCart thunk: ${error}`);
+  }
+};
+
+export const buyCart = (userId, email) => async (dispatch) => {
+  if (!userId) {
+    try {
+      let order = JSON.parse(window.localStorage.getItem("cart"));
+      await axios.post('/api/users/guestCheckout', {email, order});
+    } catch(error) {
+      console.log(`error in the buyCart thunk: ${error}`);
+    }
+  }
+  else {
     // if logged-in user, set their cart to "closed" in db.
     try {
       await axios.post(`/api/users/${userId}/buyCart`);
     } catch (error) {
-      console.log(`error in the getCart thunk: ${error}`);
+      console.log(`error in the buyCart thunk: ${error}`);
     }
   }
   // whether logged-in or not, clear redux cart.
@@ -175,7 +216,8 @@ export default function cart(state = [], action) {
         return [...state, action.product];
       }
     }
-
+    case EDIT_CART: 
+      return state.map(item => item.id === action.product.id ? action.product : item)
     case CLEAR_CART:
       return [];
     case REMOVE_ITEM_FROM_CART:
