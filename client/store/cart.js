@@ -163,6 +163,7 @@ export const buyCart = (userId, email) => async (dispatch) => {
     try {
       let order = JSON.parse(window.localStorage.getItem("cart"));
       await axios.post('/api/users/guestCheckout', {email, order});
+      localStorage.setItem("cart", JSON.stringify([]));
     } catch(error) {
       console.log(`error in the buyCart thunk: ${error}`);
     }
