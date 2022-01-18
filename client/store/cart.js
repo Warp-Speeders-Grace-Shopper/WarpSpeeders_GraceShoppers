@@ -7,6 +7,8 @@ const CLEAR_CART = 'CLEAR_CART';
 const REMOVE_ITEM_FROM_CART = 'REMOVE_ITEM_FROM_CART';
 const BUY_CART = 'BUY_CART';
 
+const TOKEN = 'token';
+
 // action creator(s):
 const _getCart = (cart) => {
   return { type: GET_CART, cart };
@@ -31,7 +33,10 @@ export const getCart = (userId) => {
   // take in userId, return cart that belongTo that user
   return async (dispatch) => {
     try {
-      const axiosResponse = await axios.get(`/api/users/${userId}/cart`);
+      const token = window.localStorage.getItem(TOKEN);
+      const axiosResponse = await axios.get(`/api/users/${userId}/cart`, {
+        headers: { authorization: token },
+      });
       dispatch(_getCart(axiosResponse.data));
     } catch (error) {
       console.log(`error in the getCart thunk: ${error}`);
