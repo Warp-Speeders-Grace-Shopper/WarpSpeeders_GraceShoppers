@@ -38,6 +38,7 @@ export default function () {
     </div>
   );
   function addToCartHandler(productId, quantity = 1, userId = 0) {
+    console.log("Add to cart user", userId)
     dispatch(addToCart(productId, quantity, userId));
   }
 }

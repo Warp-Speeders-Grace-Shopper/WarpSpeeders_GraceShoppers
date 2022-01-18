@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 
 // action type constant(s):
-const GET_CART = 'GET_CART';
-const ADD_TO_CART = 'ADD_TO_CART';
-const CLEAR_CART = 'CLEAR_CART';
-const REMOVE_ITEM_FROM_CART = 'REMOVE_ITEM_FROM_CART';
-const BUY_CART = 'BUY_CART';
+const GET_CART = "GET_CART";
+const ADD_TO_CART = "ADD_TO_CART";
+const CLEAR_CART = "CLEAR_CART";
+const REMOVE_ITEM_FROM_CART = "REMOVE_ITEM_FROM_CART";
+const BUY_CART = "BUY_CART";
 
 // action creator(s):
 const _getCart = (cart) => {
@@ -27,35 +27,58 @@ const _removeItemFromCart = (product) => {
 // there is no buyCart action creator -- clearCart is used instead.
 
 // thunk(s)
-export const getCart = (userId) => {
-  // take in userId, return cart that belongTo that user
-  return async (dispatch) => {
-    try {
+export const getCart = (userId) => async (dispatch) => {
+  try {
+    // if Guest
+    if (!userId) {
+      // Check if cart exists in localStorage
+      // If cart not exists, create new cart array
+      let cart = window.localStorage.getItem("cart")
+        ? JSON.parse(window.localStorage.getItem("cart"))
+        : [];
+      dispatch(_getCart(cart));
+    } else {
+      // if Customer
+      // take in userId, return cart that belongTo that user
       const axiosResponse = await axios.get(`/api/users/${userId}/cart`);
       dispatch(_getCart(axiosResponse.data));
-    } catch (error) {
-      console.log(`error in the getCart thunk: ${error}`);
     }
-  };
+  } catch (error) {
+    console.log(`error in the getCart thunk: ${error}`);
+  }
 };
 
 export const addToCart = (productId, quantity, userId) => async (dispatch) => {
   try {
-    if (userId === 0) {
-      // guest addToCart flow:
+    // if Guest
+    if (!userId) {
       const axiosResponse = await axios.get(`/api/products/${productId}`);
-      dispatch(
-        _addToCart({
-          ...axiosResponse.data,
-          Order_Product: {
-            quantity,
-            checkoutPrice: axiosResponse.data.price,
-          }, // this mimics the Order_Product stuff that would be added on when added to the actual db
-          // this allows _addToCart action to handle logged-in AND logged-out users.
-        })
-      );
+      let newItem = {
+        ...axiosResponse.data,
+        Order_Product: {
+          quantity,
+        },
+      };
+      dispatch(_addToCart(newItem));
+      // Check if cart exists in localStorage
+      // If cart not exists, create new cart array
+      let cart = window.localStorage.getItem("cart")
+        ? JSON.parse(window.localStorage.getItem("cart"))
+        : [];
+      // Check if product exists in cart
+      if (cart.find((lineItem) => lineItem.id === productId)) {
+        // If exists, increment qty
+        cart.find(
+          (lineItem) => lineItem.id === productId
+        ).Order_Product.quantity += quantity;
+      } else {
+        // If not exists, create new obj for order line {productId: _, qty: _} and push to array
+        cart.push(newItem);
+      }
+      // Save new cart to localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
     } else {
-      //logged-in user addToCart flow:
+      // if Customer
       const axiosResponse = await axios.post(`/api/users/${userId}/addToCart`, {
         productId, // this object can handle quantity already, we can also add other options!
       });
@@ -68,7 +91,9 @@ export const addToCart = (productId, quantity, userId) => async (dispatch) => {
 
 export const clearCart = (userId) => async (dispatch) => {
   try {
-    if (userId != 0) {
+    if (!userId) {
+      localStorage.setItem("cart", JSON.stringify([]));
+    } else {
       // destroy cart in db for logged-in users:
       // console.log(`logged-in user detected. attempting to delete cart from db`);
       await axios.delete(`/api/users/${userId}/clearCart`);
@@ -82,7 +107,12 @@ export const clearCart = (userId) => async (dispatch) => {
 
 export const removeItemFromCart = (product, userId) => async (dispatch) => {
   try {
-    if (userId != 0) {
+    if (!userId) {
+      let cart = JSON.parse(window.localStorage.getItem("cart"));
+      cart = cart.filter((lineItem) => lineItem.id !== product.id);
+      // Save new cart to localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } else {
       // destroy cart in db for logged-in users:
       console.log(`logged-in user detected. attempting to delete cart from db`);
       await axios.delete(`/api/users/${userId}/removeFromCart/${product.id}`);

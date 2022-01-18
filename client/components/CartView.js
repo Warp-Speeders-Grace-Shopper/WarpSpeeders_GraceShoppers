@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { clearCart, getCart, removeItemFromCart, buyCart } from '../store/cart';
-import { useDispatch, useSelector } from 'react-redux';
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-import Table from 'react-bootstrap/Table';
-import Card from 'react-bootstrap/Card';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Image from 'react-bootstrap/Image';
-import history from '../history';
+import React, { useEffect, useState } from "react";
+import { clearCart, getCart, removeItemFromCart, buyCart } from "../store/cart";
+import { useDispatch, useSelector } from "react-redux";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
+import Table from "react-bootstrap/Table";
+import Card from "react-bootstrap/Card";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Image from "react-bootstrap/Image";
+import history from "../history";
 
 const CartView = () => {
   const [editMode, toggleEditMode] = useState(false);
@@ -19,9 +19,9 @@ const CartView = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    if (id) {
-      dispatch(getCart(id));
-    }
+    // if (id) {
+    dispatch(getCart(id));
+    // }
   }, [id]);
   // when the page loads (and whenever user login changes), dispatch getCart
   const cart = useSelector((state) => state.cart);
@@ -39,7 +39,7 @@ const CartView = () => {
 
   function handleBuyCart(userId = 0) {
     dispatch(buyCart(userId));
-    history.push('/thankYou');
+    history.push("/thankYou");
   }
 
   return (
@@ -47,7 +47,7 @@ const CartView = () => {
       <Card.Body>
         <Row>
           <Col>
-            <h1>Cart for {username || 'Guest'}</h1>
+            <h1>Cart for {username || "Guest"}</h1>
           </Col>
 
           {cart[0] ? (
@@ -84,7 +84,7 @@ const CartView = () => {
                 )}
                 <Button
                   variant="danger"
-                  style={{ maxWidth: '8rem' }}
+                  style={{ maxWidth: "8rem" }}
                   onClick={() => handleClearCart(id)}
                 >
                   Clear Cart
@@ -92,7 +92,7 @@ const CartView = () => {
               </ButtonGroup>
             </Col>
           ) : (
-            ' '
+            " "
           )}
         </Row>
 
@@ -117,10 +117,10 @@ const CartView = () => {
                           <Image
                             src={cartItem.imageUrl}
                             style={{
-                              maxWidth: '4rem',
-                              maxHeight: '4rem',
+                              maxWidth: "4rem",
+                              maxHeight: "4rem",
                             }}
-                          />{' '}
+                          />{" "}
                           <a href={`products/${cartItem.id}`}>
                             {cartItem.name}
                           </a>
@@ -166,7 +166,7 @@ const CartView = () => {
                             return val.Order_Product.quantity + accum;
                           }, 0)
                           // this reduce sums up the total quantity of items in the cart.
-                        }{' '}
+                        }{" "}
                         Items
                       </h3>
                     </td>
@@ -186,7 +186,7 @@ const CartView = () => {
                       </h3>
                     </td>
                     <td>
-                      {' '}
+                      {" "}
                       {editMode ? (
                         <Button variant="success" disabled>
                           Buy Now
@@ -205,7 +205,7 @@ const CartView = () => {
               </Table>
             </Container>
           ) : (
-            'Cart is empty. Buy some stuff!'
+            "Cart is empty. Buy some stuff!"
           )}
         </div>
       </Card.Body>
