@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../store/products";
 import { Link } from "react-router-dom";
+import { Card, Container, Row, Col } from "react-bootstrap";
 
 const AllProducts = () => {
   const products = useSelector((state) => state.products);
@@ -10,20 +11,24 @@ const AllProducts = () => {
     dispatch(getProducts());
   }, []);
   return products.length ? (
-    <div>
+    <Container>
+    <Row>
       {products.map((product, i) => {
         return (
-          <div key={i}>
+          <Col>
+          <Card key={i} style={{ maxWidth: "20rem" }}>
             <Link to={`/products/${product.id}`}>
-              <div>
+              <Card.Title>
                 {product.name} ${(product.price)/100}
-              </div>
-              <img src={product.imageUrl} style={{ maxWidth: "10rem" }} />
+              </Card.Title>
+              <Card.Img src={product.imageUrl} />
             </Link>
-          </div>
+          </Card>
+          </Col>
         );
       })}
-    </div>
+    </Row>
+    </Container>
   ) : (
     <div>Loading</div>
   );

@@ -46,13 +46,16 @@ const Menu = () => {
                 >
                   All
                 </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/products">
+                <NavDropdown.Item as={Link} to="/plants">
                   Plants
                 </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/products">
+                <NavDropdown.Item as={Link} to="/pots">
+                  Pots
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/tools">
                   Tools
                 </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/products">
+                <NavDropdown.Item as={Link} to="/apparel">
                   Apparel
                 </NavDropdown.Item>
               </NavDropdown>
