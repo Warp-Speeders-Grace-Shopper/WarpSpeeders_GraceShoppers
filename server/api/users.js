@@ -150,3 +150,18 @@ router.delete('/:userId/removeFromCart/:itemId', async (req, res, next) => {
     next(error);
   }
 });
+
+router.post('/:userId/buyCart', async (req, res, next) => {
+  // console.log(`router post route REACHED`);
+  try {
+    await Order.update(
+      { status: 'complete' },
+      { where: { userId: req.params.userId, status: 'open' } }
+    );
+    // console.log(`order updated(?)`);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(`error in the router.post route to buy cart: ${error}`);
+    next(error);
+  }
+});

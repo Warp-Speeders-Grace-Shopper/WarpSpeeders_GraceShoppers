@@ -5,13 +5,14 @@ const GET_CART = 'GET_CART';
 const ADD_TO_CART = 'ADD_TO_CART';
 const CLEAR_CART = 'CLEAR_CART';
 const REMOVE_ITEM_FROM_CART = 'REMOVE_ITEM_FROM_CART';
+const BUY_CART = 'BUY_CART';
 
 // action creator(s):
 const _getCart = (cart) => {
   return { type: GET_CART, cart };
 };
 
-const _clearCart = () => {
+export const _clearCart = () => {
   return { type: CLEAR_CART };
 };
 
@@ -22,6 +23,8 @@ const _addToCart = (product) => {
 const _removeItemFromCart = (product) => {
   return { type: REMOVE_ITEM_FROM_CART, product };
 };
+
+// there is no buyCart action creator -- clearCart is used instead.
 
 // thunk(s)
 export const getCart = (userId) => {
@@ -90,6 +93,19 @@ export const removeItemFromCart = (product, userId) => async (dispatch) => {
   } catch (error) {
     console.log(`error in the removeItemFromCart thunk: ${error}`);
   }
+};
+
+export const buyCart = (userId) => async (dispatch) => {
+  if (userId != 0) {
+    // if logged-in user, set their cart to "closed" in db.
+    try {
+      await axios.post(`/api/users/${userId}/buyCart`);
+    } catch (error) {
+      console.log(`error in the getCart thunk: ${error}`);
+    }
+  }
+  // whether logged-in or not, clear redux cart.
+  dispatch(_clearCart());
 };
 
 // Reducer

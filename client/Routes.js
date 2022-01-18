@@ -1,14 +1,15 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { withRouter, Route, Switch, Redirect } from "react-router-dom";
-import { Login, Signup } from "./components/AuthForm";
-import Home from "./components/Home";
-import { me } from "./store";
-import SingleProduct from "./components/SingleProduct";
-import AllProducts from "./components/AllProducts";
-import CartView from "./components/CartView";
-import AdminProductPanel from "./components/AdminProductPanel";
-import EditProduct from "./components/EditProduct";
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { Login, Signup } from './components/AuthForm';
+import Home from './components/Home';
+import { me } from './store';
+import SingleProduct from './components/SingleProduct';
+import AllProducts from './components/AllProducts';
+import CartView from './components/CartView';
+import AdminProductPanel from './components/AdminProductPanel';
+import EditProduct from './components/EditProduct';
+import OrderThankYou from './components/OrderThankYou';
 import LandingPage from "./components/LandingPage";
 import Plants from "./components/Plants";
 import Tools from "./components/Tools";
@@ -42,6 +43,7 @@ class Routes extends Component {
             />
             <Route path="/cart" component={CartView} />
             <Route path="/home" component={Home} />
+            <Route path="/thankYou" component={OrderThankYou} />
             {isAdmin && <Route path="/admin" component={AdminProductPanel} />}
             {isAdmin && (
               <Route path="/products/edit/:productId" component={EditProduct} />
@@ -61,6 +63,7 @@ class Routes extends Component {
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/cart" component={CartView} />
+            <Route path="/thankYou" component={OrderThankYou} />
           </Switch>
         )}
       </div>
@@ -76,7 +79,8 @@ const mapState = (state) => {
     // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
     isLoggedIn: !!state.auth.id,
-    isAdmin: state.auth.type === "admin",
+    isAdmin: state.auth.type === 'admin',
+
   };
 };
 

@@ -10,6 +10,7 @@ import {
   Form,
   Button,
 } from 'react-bootstrap';
+import { _clearCart } from '../store/cart';
 
 const Menu = () => {
   const { isLoggedIn, isAdmin } = useSelector((state) => {
@@ -80,7 +81,14 @@ const Menu = () => {
                     Admin
                   </Nav.Link>
                 )}
-                <Nav.Link as={Link} to="#" onClick={() => dispatch(logout())}>
+                <Nav.Link
+                  as={Link}
+                  to="#"
+                  onClick={() => {
+                    dispatch(_clearCart());
+                    dispatch(logout());
+                  }}
+                >
                   Logout
                 </Nav.Link>
               </Nav>
