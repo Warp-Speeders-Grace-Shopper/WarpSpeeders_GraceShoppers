@@ -17,22 +17,20 @@ const AdminUserPanel = () => {
 
   return users.length ? (
     <Container fluid>
-      <h2>Admin User Panel</h2>
-      <Row>
-        {users.map((user) => {
-          return (
-            <Col key={user.id} xs={3}>
-              <Card style={{ width: '18rem' }}>
-                <Card.Body>
-                  <Card.Text>
-                    {user.id} {user.username}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-          );
-        })}
-      </Row>
+      <Link to="/admin">Products</Link>
+        <h2>Admin User Panel</h2>
+            {users.map((user) => {
+              return (
+                <Row key={user.id} xs={3}>
+                  <Card style={{ width: "18rem" }}>
+                    <Card.Body>
+                      <Card.Text>{user.id} {user.username}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Row>
+              );
+            })}
+
     </Container>
   ) : (
     <div>Loading</div>

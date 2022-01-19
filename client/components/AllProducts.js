@@ -10,19 +10,20 @@ const AllProducts = () => {
   useEffect(() => {
     dispatch(getProducts());
   }, []);
+
   return products.length ? (
-    <Container>
+    <Container fluid>
+      <h2>All Products</h2>
     <Row>
       {products.map((product, i) => {
         return (
-          <Col>
-          <Card key={i} style={{ maxWidth: "20rem" }}>
+          <Col key ={i} xs={3}>
+          <Card style={{width: "18rem"}}>
             <Link to={`/products/${product.id}`}>
-              <Card.Title>
-                {product.name} ${(product.price)/100}
-              </Card.Title>
-              <Card.Img src={product.imageUrl} />
+              <Card.Img src={product.imageUrl}/>
             </Link>
+              <Card.Title>{product.name} </Card.Title>
+              <Card.Text>${(product.price)/100}</Card.Text>
           </Card>
           </Col>
         );
