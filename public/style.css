@@ -51,3 +51,7 @@ tr:nth-child(even) {
 .bg-red {
   background-color: red;
 }
+
+.singleProduct-img {
+  max-height: max-content;
+}

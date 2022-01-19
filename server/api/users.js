@@ -4,10 +4,9 @@ const {
 } = require("../db");
 module.exports = router;
 
-
-router.get('/', async (req, res, next) => {
-  if (req.user.type != 'admin') {
-    res.status(403).send('You must be an admin to view customer data.');
+router.get("/", async (req, res, next) => {
+  if (req.user.type != "admin") {
+    res.status(403).send("You must be an admin to view customer data.");
   }
   try {
     const users = await User.findAll({
@@ -25,9 +24,9 @@ router.get('/', async (req, res, next) => {
 // all routes in this file prepended with /api/users
 // so this can be reached via [project]/api/users/:userId/orders
 
-router.get('/:userId/orders', async (req, res, next) => {
-  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
-    res.status(403).send('you do not have permission to view these orders');
+router.get("/:userId/orders", async (req, res, next) => {
+  if (req.user.type != "admin" && req.params.userId != req.user.id) {
+    res.status(403).send("you do not have permission to view these orders");
   }
   try {
     const orders = await Order.findAll({
@@ -43,10 +42,9 @@ router.get('/:userId/orders', async (req, res, next) => {
   }
 });
 
-
-router.get('/:userId/cart', async (req, res, next) => {
-  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
-    res.status(403).send('you do not have permission to view this cart');
+router.get("/:userId/cart", async (req, res, next) => {
+  if (req.user.type != "admin" && req.params.userId != req.user.id) {
+    res.status(403).send("you do not have permission to view this cart");
   }
   try {
     const cart = await Order.findAll({
@@ -74,10 +72,9 @@ router.get('/:userId/cart', async (req, res, next) => {
   }
 });
 
-
-router.post('/:userId/addToCart', async (req, res, next) => {
-  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
-    res.status(403).send('you do not have permission to add to this cart');
+router.post("/:userId/addToCart", async (req, res, next) => {
+  if (req.user.type != "admin" && req.params.userId != req.user.id) {
+    res.status(403).send("you do not have permission to add to this cart");
   }
   try {
     // get productId and quantity from req body; userId from URL param:
@@ -105,7 +102,6 @@ router.post('/:userId/addToCart', async (req, res, next) => {
       });
     } else {
       // but if the item already is in the current order, update the quantity:
-      console.log(`that item is already in the cart so i'll update qty`);
       await currentOrderProductsLineItem.increment("quantity", {
         by: quantity,
       });
@@ -133,7 +129,8 @@ router.put("/:userId/editCart", async (req, res, next) => {
     const currentOrderProductsLineItem = await Order_Product.findOne({
       where: { orderId: cart.id, productId: product.id },
     });
-    const updatedOrderProductsLineItem = await currentOrderProductsLineItem.update(product.Order_Product);
+    const updatedOrderProductsLineItem =
+      await currentOrderProductsLineItem.update(product.Order_Product);
     res.send(updatedOrderProductsLineItem);
   } catch (error) {
     console.log(`error in the router.put route: ${error}`);
@@ -141,11 +138,11 @@ router.put("/:userId/editCart", async (req, res, next) => {
   }
 });
 
-router.delete('/:userId/clearCart', async (req, res, next) => {
-  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
+router.delete("/:userId/clearCart", async (req, res, next) => {
+  if (req.user.type != "admin" && req.params.userId != req.user.id) {
     res
       .status(403)
-      .send('you do not have permission to remove items from this cart');
+      .send("you do not have permission to remove items from this cart");
   }
   const { userId } = req.params;
   try {
@@ -162,24 +159,18 @@ router.delete('/:userId/clearCart', async (req, res, next) => {
   }
 });
 
-router.delete('/:userId/removeFromCart/:itemId', async (req, res, next) => {
-  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
+router.delete("/:userId/removeFromCart/:itemId", async (req, res, next) => {
+  if (req.user.type != "admin" && req.params.userId != req.user.id) {
     res
       .status(403)
-      .send('you do not have permission to remove items from this cart');
+      .send("you do not have permission to remove items from this cart");
   }
   try {
     const { userId, itemId } = req.params;
-
-    // get user's cart from db:
     const cart = await Order.findOne({
       where: { userId, status: "open" },
     });
-
-    //use magic method to remove product
     await cart.removeProduct(itemId);
-    // console.log(Object.keys(cart.__proto__));   <----- magic method checker
-
     res.status(200).send(itemId);
   } catch (error) {
     console.log(
@@ -189,16 +180,24 @@ router.delete('/:userId/removeFromCart/:itemId', async (req, res, next) => {
   }
 });
 
-router.post('/:userId/buyCart', async (req, res, next) => {
-  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
-    res.status(403).send('you do not have permission to purchase this cart');
+router.post("/:userId/buyCart", async (req, res, next) => {
+  if (req.user.type != "admin" && req.params.userId != req.user.id) {
+    res.status(403).send("you do not have permission to purchase this cart");
   }
   try {
-    await Order.update(
-      { status: "complete" },
-      { where: { userId: req.params.userId, status: "open" } }
-    );
-    // Must add checkoutPrice to Order_Products table for all items
+    let currentOrder = await Order.findOne({
+      where: { userId: req.params.userId, status: "open" },
+    });
+    let currentOrderProducts = await Order_Product.findAll({
+      where: { orderId: currentOrder.id },
+    });
+    for (let i = 0; i < currentOrderProducts.length; i++) {
+      let product = await Product.findOne({
+        where: { id: currentOrderProducts[i].productId },
+      });
+      await currentOrderProducts[i].update({ checkoutPrice: product.price });
+    }
+    await currentOrder.update({ status: "complete" });
     res.sendStatus(200);
   } catch (error) {
     console.log(`error in the router.post route to buy cart: ${error}`);
@@ -208,15 +207,22 @@ router.post('/:userId/buyCart', async (req, res, next) => {
 
 router.post("/guestCheckout", async (req, res, next) => {
   try {
-    const {email, order} = req.body
+    const { email, order } = req.body;
     const [guest, created] = await User.findOrCreate({
-      where: { email }});
-    let guestOrder = await guest.createOrder({status: 'complete'});
-    for (let i=0; i<req.body.order.length; i++) {
-      await guestOrder.addProduct(order[i].id, {through: {...order[i].Order_Product, checkoutPrice: order[i].price}})
+      where: { email },
+    });
+    let guestOrder = await guest.createOrder({ status: "complete" });
+    for (let i = 0; i < req.body.order.length; i++) {
+      await guestOrder.addProduct(order[i].id, {
+        through: { ...order[i].Order_Product, checkoutPrice: order[i].price },
+      });
     }
-    req.body.order.map(async item => await guestOrder.addProduct(item, {
-      through: { ...item.Order_Product, checkoutPrice: item.price }}));
+    req.body.order.map(
+      async (item) =>
+        await guestOrder.addProduct(item, {
+          through: { ...item.Order_Product, checkoutPrice: item.price },
+        })
+    );
     res.status(200).send(guestOrder);
   } catch (error) {
     console.log(`error in the router.post route to buy cart: ${error}`);
