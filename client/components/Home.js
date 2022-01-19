@@ -33,12 +33,14 @@ const Home = () => {
 
   const orders = useSelector((state) => state.currentOrders);
   const { cart } = useSelector((state) => state);
-  // const totalCartItems =
-  //   cart.reduce((accum, currentEl) => {
-  //     return accum + currentEl.Order_Product.quantity;
-  //   }, 0) || 0;
   const isAdmin = useSelector((state) => state.auth.type === 'admin');
   const { products } = useSelector((state) => state);
+
+  let totalCartItems = 0;
+  if (cart[0])
+    totalCartItems = cart.reduce((accum, currentEl) => {
+      return accum + currentEl.Order_Product.quantity;
+    }, 0);
 
   return (
     <Container>
@@ -129,11 +131,7 @@ const Home = () => {
                 >
                   View Cart
                 </Button>{' '}
-                Your cart currently contains{' '}
-                {cart.reduce((accum, currentEl) => {
-                  return accum + currentEl.Order_Product.quantity;
-                })}{' '}
-                total items
+                Your cart currently contains {totalCartItems} total items
                 {/* {cart.length} unique items and{' '} */}
               </ListGroup.Item>
               <ListGroup.Item disabled>
