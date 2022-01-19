@@ -25,7 +25,7 @@ const Menu = () => {
   return (
     <Navbar
       collapseOnSelect
-      bg="Green"
+      bg={isAdmin ? 'Yellow' : 'Green'}
       sticky="top"
       expand="md"
       className="py-sm py-0"
@@ -73,14 +73,16 @@ const Menu = () => {
             {isLoggedIn ? (
               <Nav>
                 {/* The navbar will show these links after you log in */}
-                <Nav.Link as={Link} to="/home">
-                  Home
-                </Nav.Link>
-                {isAdmin && (
-                  <Nav.Link as={Link} to="/admin">
+                {isAdmin ? (
+                  <Nav.Link as={Link} to="/home">
                     Admin
                   </Nav.Link>
+                ) : (
+                  <Nav.Link as={Link} to="/home">
+                    Home
+                  </Nav.Link>
                 )}
+
                 <Nav.Link
                   as={Link}
                   to="#"

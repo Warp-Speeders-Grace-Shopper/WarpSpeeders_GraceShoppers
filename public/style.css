@@ -44,6 +44,10 @@ tr:nth-child(even) {
   background-image: linear-gradient(#a9f6a8, #008002);
 }
 
+.bg-Yellow {
+  background-image: linear-gradient(#008002, goldenrod);
+}
+
 .bg-red {
   background-color: red;
 }
