@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { authenticate } from '../store';
+import { Container, Form } from 'react-bootstrap';
 
 const AuthForm = ({ formName }) => {
   //the only thing we need from the store is the error so we get that using useSelector
@@ -53,9 +54,9 @@ const AuthForm = ({ formName }) => {
   };
 
   return (
-    <div>
+    <Container fluid>
       {/* <pre>{JSON.stringify({ username, password }, undefined, 2)}</pre> */}
-      <form onSubmit={handleSubmit} name={formName}>
+      <Form onSubmit={handleSubmit} name={formName}>
         <div>
           <label htmlFor="username">
             <small>Username/Email</small>
@@ -90,8 +91,8 @@ const AuthForm = ({ formName }) => {
           </button>
         </div>
         {error && error.response && <div>{error.response.data}</div>}
-      </form>
-    </div>
+      </Form>
+    </Container>
   );
 };
 
