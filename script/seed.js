@@ -20,11 +20,11 @@ async function seed() {
     User.create({ username: "murphy", password: "123" }),
     User.create({ username: "tyler", password: "tyler" }),
     User.create({ username: "elstan", password: "elstan" }),
-    User.create({ username: "alston", password: "alston" }),
     User.create({ username: "ryan", password: "ryan" }),
     User.create({ username: "admin", password: "admin", type: "admin" }),
-
+    
   ]);
+  const alston = await User.create({ username: "alston", password: "alston" });
 
   // Creating Products
   const products = await Promise.all([
@@ -185,11 +185,11 @@ async function seed() {
   await elstanOrder.addProduct(products[3]);
   await elstanOrder.addProduct(products[1]);
   // Single item, added with qty >> 1 and checkoutPrice
-  const alstonUser = await User.findOne({ where: { username: 'alston' } });
-  const alstonOrder = await alstonUser.createOrder({});
+  const alstonOrder = await alston.createOrder({});
   await alstonOrder.addProduct(products[7], {
     through: { quantity: 6, checkoutPrice: products[7].price },
   });
+  
   // No items
   const ryanUser = await User.findOne({ where: { username: 'ryan' } });
   const ryanOrder = await ryanUser.createOrder({});
