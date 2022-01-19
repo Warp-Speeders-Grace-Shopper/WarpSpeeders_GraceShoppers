@@ -120,9 +120,14 @@ router.post("/:userId/addToCart", async (req, res, next) => {
 
 // PUT /api/users/:userId/editCart/:productId
 router.put("/:userId/editCart", async (req, res, next) => {
+  if (req.user.type != "admin" && req.params.userId != req.user.id) {
+    res
+      .status(403)
+      .send("you do not have permission to remove items from this cart");
+  }
   try {
     const { userId } = req.params;
-    const product = req.body;
+    const { product}  = req.body;
     const cart = await Order.findOne({
       where: { userId, status: "open" },
     });
