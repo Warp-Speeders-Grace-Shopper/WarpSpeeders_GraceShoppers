@@ -99,14 +99,14 @@ const Home = () => {
                     <Col>View registered customers</Col>
                   </Row>
                 </ListGroup.Item>
-                <ListGroup.Item disabled>
+                {/* <ListGroup.Item disabled>
                   <Row>
                     <Col md="auto">
                       <Button variant="secondary">Order History</Button>
                     </Col>
                     <Col>View a history of completed orders.</Col>
                   </Row>
-                </ListGroup.Item>
+                </ListGroup.Item> */}
               </ListGroup>
             </Card>
           </Col>
@@ -118,7 +118,12 @@ const Home = () => {
             <Card.Body>
               <Card.Title>Welcome, {username}</Card.Title>
               <Card.Text>
-                Thank you for being a House of Plants customer!
+                Thank you for being a House of Plants customer! <br />
+                You have placed{' '}
+                {
+                  orders.filter((order) => order.status === 'complete').length
+                }{' '}
+                orders with House of Plants.
               </Card.Text>
               <Button
                 variant="primary"
@@ -142,20 +147,17 @@ const Home = () => {
                 Your cart currently contains {totalCartItems} total items
                 {/* {cart.length} unique items and{' '} */}
               </ListGroup.Item>
-              <ListGroup.Item disabled>
+              {/* <ListGroup.Item disabled>
                 <Button disabled variant="outline-secondary">
                   Order History
                 </Button>{' '}
-                You have placed{' '}
-                {orders.filter((order) => order.status === 'complete').length}{' '}
-                orders with House of Plants.
               </ListGroup.Item>
               <ListGroup.Item disabled>
                 <Button variant="outline-secondary" disabled>
                   Edit Account
                 </Button>{' '}
                 Update your Account email address
-              </ListGroup.Item>
+              </ListGroup.Item> */}
             </ListGroup>
           </Card>
         </Col>
