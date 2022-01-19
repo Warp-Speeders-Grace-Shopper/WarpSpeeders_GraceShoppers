@@ -154,10 +154,13 @@ export const editCart = (product, userId) => async (dispatch) => {
       localStorage.setItem("cart", JSON.stringify(cart));
     } else {
       // if Customer
-      const axiosResponse = await axios.put(
-        `/api/users/${userId}/editCart`,
-        product
-      );
+      const token = window.localStorage.getItem(TOKEN);
+      const axiosResponse = await axios({
+        method: "put",
+        url: `/api/users/${userId}/editCart`,
+        headers: { authorization: token },
+        data: { product },
+      });
     }
     dispatch(_editCart(product));
   } catch (error) {
