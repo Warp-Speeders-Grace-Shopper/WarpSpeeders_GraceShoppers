@@ -8,6 +8,8 @@ const REMOVE_ITEM_FROM_CART = "REMOVE_ITEM_FROM_CART";
 const EDIT_CART = "EDIT_CART";
 const BUY_CART = "BUY_CART";
 
+const TOKEN = 'token';
+
 // action creator(s):
 const _getCart = (cart) => {
   return { type: GET_CART, cart };
@@ -44,8 +46,11 @@ export const getCart = (userId) => async (dispatch) => {
       dispatch(_getCart(cart));
     } else {
       // if Customer
-      // take in userId, return cart that belongTo that user
-      const axiosResponse = await axios.get(`/api/users/${userId}/cart`);
+      const token = window.localStorage.getItem(TOKEN);
+
+      const axiosResponse = await axios.get(`/api/users/${userId}/cart`, {
+        headers: { authorization: token },
+      });
       dispatch(_getCart(axiosResponse.data));
     }
   } catch (error) {
@@ -84,8 +89,13 @@ export const addToCart = (productId, quantity, userId) => async (dispatch) => {
       localStorage.setItem("cart", JSON.stringify(cart));
     } else {
       // if Customer
-      const axiosResponse = await axios.post(`/api/users/${userId}/addToCart`, {
-        productId, // this object can handle quantity already, we can also add other options!
+      const token = window.localStorage.getItem(TOKEN);
+      // console.dir(token);
+      const axiosResponse = await axios({
+        method: 'post',
+        url: `/api/users/${userId}/addToCart`,
+        headers: { authorization: token },
+        data: { productId, quantity },
       });
       dispatch(_addToCart(axiosResponse.data));
     }
@@ -99,9 +109,13 @@ export const clearCart = (userId) => async (dispatch) => {
     if (!userId) {
       localStorage.setItem("cart", JSON.stringify([]));
     } else {
+      const token = window.localStorage.getItem(TOKEN);
+
       // destroy cart in db for logged-in users:
       // console.log(`logged-in user detected. attempting to delete cart from db`);
-      await axios.delete(`/api/users/${userId}/clearCart`);
+      await axios.delete(`/api/users/${userId}/clearCart`, {
+        headers: { authorization: token },
+      });
     }
     // reset cart in redux store for all users:
     dispatch(_clearCart());
@@ -118,12 +132,14 @@ export const removeItemFromCart = (product, userId) => async (dispatch) => {
       // Save new cart to localStorage
       localStorage.setItem("cart", JSON.stringify(cart));
     } else {
+      const token = window.localStorage.getItem(TOKEN);
+
       // destroy cart in db for logged-in users:
-      console.log(`logged-in user detected. attempting to delete cart from db`);
-      await axios.delete(`/api/users/${userId}/removeFromCart/${product.id}`);
+      await axios.delete(`/api/users/${userId}/removeFromCart/${product.id}`, {
+        headers: { authorization: token },
+      });
     }
-    // console.log(`remove item thunk reached`);
-    // console.dir(product);
+
     dispatch(_removeItemFromCart(product));
   } catch (error) {
     console.log(`error in the removeItemFromCart thunk: ${error}`);
@@ -134,17 +150,13 @@ export const editCart = (product, userId) => async (dispatch) => {
   try {
     // if Guest
     if (!userId) {
-      // Check if cart exists in localStorage
-      // If cart not exists, create new cart array
       let cart = JSON.parse(window.localStorage.getItem("cart"));
       // Check if product exists in cart
-      // If exists, increment qty
      cart.find(
         (lineItem) => lineItem.id === product.id
       ).Order_Product.quantity = product.Order_Product.quantity;
       // Save new cart to localStorage
       localStorage.setItem("cart", JSON.stringify(cart));
-      // dispatch(_addToCart(newItem));
     } else {
       // if Customer
       const axiosResponse = await axios.put(
@@ -171,7 +183,11 @@ export const buyCart = (userId, email) => async (dispatch) => {
   else {
     // if logged-in user, set their cart to "closed" in db.
     try {
-      await axios.post(`/api/users/${userId}/buyCart`);
+      const token = window.localStorage.getItem(TOKEN);
+
+      await axios.post(`/api/users/${userId}/buyCart`, {
+        headers: { authorization: token },
+      });
     } catch (error) {
       console.log(`error in the buyCart thunk: ${error}`);
     }

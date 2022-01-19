@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 
 // action type constant(s):
-const GET_ORDERS = "GET_ORDERS";
+const GET_ORDERS = 'GET_ORDERS';
+const TOKEN = 'token';
 
 // action creator(s):
 const _getOrders = (orders) => {
@@ -13,8 +14,13 @@ export const getOrders = (userId) => {
   // take in userId, return array of orders that belongTo that user
   return async (dispatch) => {
     try {
-      const axiosResponse = await axios.get(`/api/users/${userId}/orders`);
-      dispatch(_getOrders(axiosResponse.data));
+      const token = window.localStorage.getItem(TOKEN);
+      if (token) {
+        const axiosResponse = await axios.get(`/api/users/${userId}/orders`, {
+          headers: { authorization: token },
+        });
+        dispatch(_getOrders(axiosResponse.data));
+      }
     } catch (error) {
       console.log(`error in the getOrders thunk: ${error}`);
     }

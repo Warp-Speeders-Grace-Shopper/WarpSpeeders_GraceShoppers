@@ -7,6 +7,8 @@ const ADD_PRODUCT = 'ADD_PRODUCT';
 const DELETE_PRODUCT = 'DELETE_PRODUCT';
 const EDIT_PRODUCT = 'EDIT_PRODUCT';
 
+const TOKEN = 'token';
+
 //Action Creators
 
 const _getProducts = (products) => ({
@@ -45,7 +47,15 @@ export const getProducts = () => {
 export const addProduct = (product) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.post('/api/products', product);
+      const token = window.localStorage.getItem(TOKEN);
+
+      const { data } = await axios({
+        method: 'post',
+        url: '/api/products',
+        headers: { authorization: token },
+        data: { product },
+      });
+
       dispatch(_addProduct(data));
     } catch (err) {
       console.log(err);
@@ -56,7 +66,11 @@ export const addProduct = (product) => {
 export const deleteProduct = (productId) => {
   return async (dispatch) => {
     try {
-      await axios.delete(`/api/products/${productId}`);
+      const token = window.localStorage.getItem(TOKEN);
+
+      await axios.delete(`/api/products/${productId}`, {
+        headers: { authorization: token },
+      });
       dispatch(_deleteProduct(productId));
     } catch (err) {
       console.log(err);
@@ -67,7 +81,14 @@ export const deleteProduct = (productId) => {
 export const editProduct = (product) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.put(`/api/products/${product.id}`, product);
+      const token = window.localStorage.getItem(TOKEN);
+
+      const { data } = await axios.put(`/api/products/${product.id}`, {
+        headers: { authorization: token },
+        data: {
+          product,
+        },
+      });
       dispatch(_editProduct(data));
     } catch (err) {
       console.log(err);
