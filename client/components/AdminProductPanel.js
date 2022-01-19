@@ -19,6 +19,7 @@ const AdminProductPanel = () => {
 
   return (
     <Container fluid>
+      <Link to={'/users'}> Users </Link>
         <h2>Admin Product Panel</h2>
         <AddProduct/>
         {products.length && (
