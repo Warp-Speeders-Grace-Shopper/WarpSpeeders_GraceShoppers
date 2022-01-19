@@ -29,6 +29,9 @@ router.get('/:productId', async (req, res, next) => {
 
 // POST /api/products/
 router.post('/', requireToken, async (req, res, next) => {
+  if (req.user.type != 'admin') {
+    res.status(403).send('You must be an admin to update product inventory.');
+  }
   try {
     console.log('Adding product', req.body);
     res.status(201).send(await Product.create(req.body));
@@ -40,6 +43,9 @@ router.post('/', requireToken, async (req, res, next) => {
 
 // DELETE /api/products/:productId
 router.delete('/:productId', requireToken, async (req, res, next) => {
+  if (req.user.type != 'admin') {
+    res.status(403).send('You must be an admin to update product inventory.');
+  }
   try {
     console.log('Deleting product');
     const product = await Product.findByPk(req.params.productId);
@@ -53,6 +59,9 @@ router.delete('/:productId', requireToken, async (req, res, next) => {
 
 // PUT /api/products/:productId
 router.put('/:productId', requireToken, async (req, res, next) => {
+  if (req.user.type != 'admin') {
+    res.status(403).send('You must be an admin to update product inventory.');
+  }
   try {
     const product = await Product.findByPk(req.params.productId);
     const updatedProduct = await product.update(req.body);

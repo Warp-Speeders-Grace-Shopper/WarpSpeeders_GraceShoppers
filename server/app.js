@@ -20,7 +20,6 @@ async function requireToken(req, res, next) {
     req.user = user; // add user object to request
     next(); // pass it on
   } catch (error) {
-    console.log(`error in the requireToken middleware: ${error}`);
     next(error);
   }
 }

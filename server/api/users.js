@@ -5,6 +5,9 @@ const {
 module.exports = router;
 
 router.get('/', async (req, res, next) => {
+  if (req.user.type != 'admin') {
+    res.status(403).send('You must be an admin to view customer data.');
+  }
   try {
     const users = await User.findAll({
       // explicitly select only the id and username fields - even though
@@ -21,6 +24,9 @@ router.get('/', async (req, res, next) => {
 // all routes in this file prepended with /api/users
 // so this can be reached via [project]/api/users/:userId/orders
 router.get('/:userId/orders', async (req, res, next) => {
+  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
+    res.status(403).send('you do not have permission to view these orders');
+  }
   try {
     const orders = await Order.findAll({
       // find all orders in db where userId matches the :userId url param
@@ -36,6 +42,9 @@ router.get('/:userId/orders', async (req, res, next) => {
 });
 
 router.get('/:userId/cart', async (req, res, next) => {
+  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
+    res.status(403).send('you do not have permission to view this cart');
+  }
   try {
     const cart = await Order.findAll({
       // find one order for this user with status of "open"
@@ -63,6 +72,9 @@ router.get('/:userId/cart', async (req, res, next) => {
 });
 
 router.post('/:userId/addToCart', async (req, res, next) => {
+  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
+    res.status(403).send('you do not have permission to add to this cart');
+  }
   try {
     // get productId and quantity from req body; userId from URL param:
     const { productId, quantity = 1 } = req.body;
@@ -114,6 +126,11 @@ router.post('/:userId/addToCart', async (req, res, next) => {
 });
 
 router.delete('/:userId/clearCart', async (req, res, next) => {
+  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
+    res
+      .status(403)
+      .send('you do not have permission to remove items from this cart');
+  }
   const { userId } = req.params;
   try {
     // get user's cart from db:
@@ -130,6 +147,11 @@ router.delete('/:userId/clearCart', async (req, res, next) => {
 });
 
 router.delete('/:userId/removeFromCart/:itemId', async (req, res, next) => {
+  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
+    res
+      .status(403)
+      .send('you do not have permission to remove items from this cart');
+  }
   try {
     const { userId, itemId } = req.params;
 
@@ -152,7 +174,9 @@ router.delete('/:userId/removeFromCart/:itemId', async (req, res, next) => {
 });
 
 router.post('/:userId/buyCart', async (req, res, next) => {
-  // console.log(`router post route REACHED`);
+  if (req.user.type != 'admin' && req.params.userId != req.user.id) {
+    res.status(403).send('you do not have permission to purchase this cart');
+  }
   try {
     await Order.update(
       { status: 'complete' },

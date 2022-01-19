@@ -34,6 +34,7 @@ export const getCart = (userId) => {
   return async (dispatch) => {
     try {
       const token = window.localStorage.getItem(TOKEN);
+
       const axiosResponse = await axios.get(`/api/users/${userId}/cart`, {
         headers: { authorization: token },
       });
@@ -61,8 +62,13 @@ export const addToCart = (productId, quantity, userId) => async (dispatch) => {
       );
     } else {
       //logged-in user addToCart flow:
-      const axiosResponse = await axios.post(`/api/users/${userId}/addToCart`, {
-        productId, // this object can handle quantity already, we can also add other options!
+      const token = window.localStorage.getItem(TOKEN);
+      // console.dir(token);
+      const axiosResponse = await axios({
+        method: 'post',
+        url: `/api/users/${userId}/addToCart`,
+        headers: { authorization: token },
+        data: { productId, quantity },
       });
       dispatch(_addToCart(axiosResponse.data));
     }
@@ -74,9 +80,13 @@ export const addToCart = (productId, quantity, userId) => async (dispatch) => {
 export const clearCart = (userId) => async (dispatch) => {
   try {
     if (userId != 0) {
+      const token = window.localStorage.getItem(TOKEN);
+
       // destroy cart in db for logged-in users:
       // console.log(`logged-in user detected. attempting to delete cart from db`);
-      await axios.delete(`/api/users/${userId}/clearCart`);
+      await axios.delete(`/api/users/${userId}/clearCart`, {
+        headers: { authorization: token },
+      });
     }
     // reset cart in redux store for all users:
     dispatch(_clearCart());
@@ -88,12 +98,14 @@ export const clearCart = (userId) => async (dispatch) => {
 export const removeItemFromCart = (product, userId) => async (dispatch) => {
   try {
     if (userId != 0) {
+      const token = window.localStorage.getItem(TOKEN);
+
       // destroy cart in db for logged-in users:
-      console.log(`logged-in user detected. attempting to delete cart from db`);
-      await axios.delete(`/api/users/${userId}/removeFromCart/${product.id}`);
+      await axios.delete(`/api/users/${userId}/removeFromCart/${product.id}`, {
+        headers: { authorization: token },
+      });
     }
-    // console.log(`remove item thunk reached`);
-    // console.dir(product);
+
     dispatch(_removeItemFromCart(product));
   } catch (error) {
     console.log(`error in the removeItemFromCart thunk: ${error}`);
@@ -104,7 +116,11 @@ export const buyCart = (userId) => async (dispatch) => {
   if (userId != 0) {
     // if logged-in user, set their cart to "closed" in db.
     try {
-      await axios.post(`/api/users/${userId}/buyCart`);
+      const token = window.localStorage.getItem(TOKEN);
+
+      await axios.post(`/api/users/${userId}/buyCart`, {
+        headers: { authorization: token },
+      });
     } catch (error) {
       console.log(`error in the getCart thunk: ${error}`);
     }
