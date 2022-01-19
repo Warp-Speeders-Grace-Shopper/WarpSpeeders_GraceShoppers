@@ -39,7 +39,7 @@ const Home = () => {
 
   useEffect(() => {
     if (isAdmin) dispatch(getUsers());
-  });
+  }, [isAdmin]);
 
   let totalCartItems = 0;
   if (cart[0])
