@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
@@ -50,14 +49,19 @@ const Home = () => {
             </Button>
           </Card.Body>
           <ListGroup>
-            <ListGroup.Item disabled>
-              <Button variant="secondary" disabled>
+            <ListGroup.Item>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  history.push('/cart');
+                }}
+              >
                 View Cart
               </Button>{' '}
               Your cart currently contains {cart.length} unique items
             </ListGroup.Item>
             <ListGroup.Item disabled>
-              <Button variant="secondary" disabled>
+              <Button disabled variant="secondary">
                 Order History
               </Button>{' '}
               You have placed{' '}
