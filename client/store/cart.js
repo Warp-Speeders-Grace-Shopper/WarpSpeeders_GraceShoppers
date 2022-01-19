@@ -6,9 +6,8 @@ const ADD_TO_CART = "ADD_TO_CART";
 const CLEAR_CART = "CLEAR_CART";
 const REMOVE_ITEM_FROM_CART = "REMOVE_ITEM_FROM_CART";
 const EDIT_CART = "EDIT_CART";
-const BUY_CART = "BUY_CART";
 
-const TOKEN = 'token';
+const TOKEN = "token";
 
 // action creator(s):
 const _getCart = (cart) => {
@@ -38,14 +37,17 @@ export const getCart = (userId) => async (dispatch) => {
   try {
     // if Guest
     if (!userId) {
-      // Check if cart exists in localStorage
-      // If cart not exists, create new cart array
       let cart = window.localStorage.getItem("cart")
         ? JSON.parse(window.localStorage.getItem("cart"))
         : [];
       dispatch(_getCart(cart));
     } else {
       // if Customer
+      if (window.localStorage.getItem("cart")) {
+        let sessionCart = JSON.parse(window.localStorage.getItem("cart"))
+        sessionCart.forEach(product => dispatch(addToCart(product.id, product.Order_Product.quantity, userId)))
+        localStorage.setItem("cart", JSON.stringify([]));
+      }
       const token = window.localStorage.getItem(TOKEN);
 
       const axiosResponse = await axios.get(`/api/users/${userId}/cart`, {
@@ -92,7 +94,7 @@ export const addToCart = (productId, quantity, userId) => async (dispatch) => {
       const token = window.localStorage.getItem(TOKEN);
       // console.dir(token);
       const axiosResponse = await axios({
-        method: 'post',
+        method: "post",
         url: `/api/users/${userId}/addToCart`,
         headers: { authorization: token },
         data: { productId, quantity },
@@ -110,14 +112,10 @@ export const clearCart = (userId) => async (dispatch) => {
       localStorage.setItem("cart", JSON.stringify([]));
     } else {
       const token = window.localStorage.getItem(TOKEN);
-
-      // destroy cart in db for logged-in users:
-      // console.log(`logged-in user detected. attempting to delete cart from db`);
       await axios.delete(`/api/users/${userId}/clearCart`, {
         headers: { authorization: token },
       });
     }
-    // reset cart in redux store for all users:
     dispatch(_clearCart());
   } catch (error) {
     console.log(`error in the clearCart thunk: ${error}`);
@@ -133,13 +131,10 @@ export const removeItemFromCart = (product, userId) => async (dispatch) => {
       localStorage.setItem("cart", JSON.stringify(cart));
     } else {
       const token = window.localStorage.getItem(TOKEN);
-
-      // destroy cart in db for logged-in users:
       await axios.delete(`/api/users/${userId}/removeFromCart/${product.id}`, {
         headers: { authorization: token },
       });
     }
-
     dispatch(_removeItemFromCart(product));
   } catch (error) {
     console.log(`error in the removeItemFromCart thunk: ${error}`);
@@ -152,7 +147,7 @@ export const editCart = (product, userId) => async (dispatch) => {
     if (!userId) {
       let cart = JSON.parse(window.localStorage.getItem("cart"));
       // Check if product exists in cart
-     cart.find(
+      cart.find(
         (lineItem) => lineItem.id === product.id
       ).Order_Product.quantity = product.Order_Product.quantity;
       // Save new cart to localStorage
@@ -171,29 +166,23 @@ export const editCart = (product, userId) => async (dispatch) => {
 };
 
 export const buyCart = (userId, email) => async (dispatch) => {
-  if (!userId) {
-    try {
+  try {
+    if (!userId) {
       let order = JSON.parse(window.localStorage.getItem("cart"));
-      await axios.post('/api/users/guestCheckout', {email, order});
+      await axios.post("/api/users/guestCheckout", { email, order });
       localStorage.setItem("cart", JSON.stringify([]));
-    } catch(error) {
-      console.log(`error in the buyCart thunk: ${error}`);
-    }
-  }
-  else {
-    // if logged-in user, set their cart to "closed" in db.
-    try {
+    } else {
       const token = window.localStorage.getItem(TOKEN);
-
-      await axios.post(`/api/users/${userId}/buyCart`, {
+      await axios({
+        method: "post",
+        url: `/api/users/${userId}/buyCart`,
         headers: { authorization: token },
       });
-    } catch (error) {
-      console.log(`error in the buyCart thunk: ${error}`);
     }
+    dispatch(_clearCart());
+  } catch (error) {
+    console.log(`error in the buyCart thunk: ${error}`);
   }
-  // whether logged-in or not, clear redux cart.
-  dispatch(_clearCart());
 };
 
 // Reducer
@@ -205,15 +194,10 @@ export default function cart(state = [], action) {
       const alreadyInCart = state.findIndex(
         (cartItem) => cartItem.id === action.product.id
       );
-
       if (alreadyInCart != -1) {
-        //adding an item already in the cart:
-        // console.log(`adding duplicate item`);
         const newState = state.map((cartItem) => {
-          // map over each item in state
           if (cartItem.id != action.product.id) {
             return cartItem;
-            // ignore the ones that don't match the action
           } else {
             return {
               ...cartItem,
@@ -222,19 +206,19 @@ export default function cart(state = [], action) {
                 quantity:
                   cartItem.Order_Product.quantity +
                   action.product.Order_Product.quantity,
-              }, // for the one that does match the action, return it as-is but add action quantity
+              },
             };
           }
         });
         return newState;
       } else {
-        //adding an item not already in the cart.
-        // console.log(`adding new item`);
         return [...state, action.product];
       }
     }
-    case EDIT_CART: 
-      return state.map(item => item.id === action.product.id ? action.product : item)
+    case EDIT_CART:
+      return state.map((item) =>
+        item.id === action.product.id ? action.product : item
+      );
     case CLEAR_CART:
       return [];
     case REMOVE_ITEM_FROM_CART:

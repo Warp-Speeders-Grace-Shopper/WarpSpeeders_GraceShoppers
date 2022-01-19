@@ -44,7 +44,7 @@ const CartView = () => {
     dispatch(clearCart(userId));
   }
 
-  function handleBuyCart(userId = 0, email = "") {
+  function handleBuyCart(userId = 0, email = " ") {
     dispatch(buyCart(userId, email));
     history.push("/thankYou");
   }
@@ -124,8 +124,11 @@ const CartView = () => {
                             <option value="3">3</option>
                             <option value="4">4</option>
                             <option value="5">5</option>
-                            <option value="5">10</option>
-                            <option value="5">25</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
                           </select>
                         </td>
                         <td>${cartItem.price / 100}</td>
@@ -193,16 +196,18 @@ const CartView = () => {
               {!id && !guestEmail && (
                 <div>Please enter email below to check out as guest!</div>
               )}
-              <form onSubmit={handleSubmitEmail}>
-                <label htmlFor="email">Email: </label>
-                <input
-                  type="text"
-                  name="email"
-                  value={emailInput}
-                  onChange={handleChangeEmail}
-                ></input>
-                <button type='submit'>Submit</button>
-              </form>
+              {!id && (
+                <form onSubmit={handleSubmitEmail}>
+                  <label htmlFor="email">Email: </label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={emailInput}
+                    onChange={handleChangeEmail}
+                  ></input>
+                  <button type="submit">Submit</button>
+                </form>
+              )}
             </Container>
           ) : (
             "Cart is empty. Buy some stuff!"
