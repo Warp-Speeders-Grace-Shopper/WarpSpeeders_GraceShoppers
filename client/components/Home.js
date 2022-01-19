@@ -1,31 +1,26 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Alert from 'react-bootstrap/Alert';
+import Container from 'react-bootstrap/Container';
+import Card from 'react-bootstrap/Card';
 
 /**
  * COMPONENT
  */
-export const Home = (props) => {
-  const { username } = props;
+const Home = () => {
+  const { id, email } = useSelector((state) => state.auth);
 
   return (
-    <div>
-      <Alert variant="primary" style={{ maxWidth: '25rem' }}>
-        <Alert.Heading>Logged in</Alert.Heading> <h3>Welcome, {username}</h3>
-        This is a React-bootstrap alert! If this is in a fancy blue box, it's
-        working.
+    <Container>
+      <Alert variant="success" style={{ maxWidth: '25rem' }}>
+        Successfully logged in as {email}
       </Alert>
-    </div>
+      <Card>
+        <Card.Title>Welcome, {email}</Card.Title>
+        <Card.Text>hi</Card.Text>
+      </Card>
+    </Container>
   );
 };
 
-/**
- * CONTAINER
- */
-const mapState = (state) => {
-  return {
-    username: state.auth.username,
-  };
-};
-
-export default connect(mapState)(Home);
+export default Home;
