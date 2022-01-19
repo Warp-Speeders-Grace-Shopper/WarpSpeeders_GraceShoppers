@@ -18,7 +18,12 @@ const CartView = () => {
   const [guestEmail, setGuestEmail] = useState("");
 
   const { id, username } = useSelector((state) => state.auth);
+
+  //grab user ID and username from state
+  let name = username ? username.split('@')[0] : username;
+
   const cart = useSelector((state) => state.cart);
+
 
   useEffect(() => {
     dispatch(getCart(id));
@@ -64,7 +69,9 @@ const CartView = () => {
       <Card.Body>
         <Row>
           <Col>
-            <h1>Cart for {username || "Guest"}</h1>
+
+            <h1>Cart for {name || 'Guest'}</h1>
+
           </Col>
 
           {cart[0] ? (
