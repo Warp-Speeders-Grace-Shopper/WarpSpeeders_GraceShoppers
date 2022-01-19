@@ -6,9 +6,11 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import history from '../history';
 import { getCart, addToCart } from '../store/cart';
 import { getOrders } from '../store/orders';
+import { getProducts } from '../store/products';
 
 /**
  * COMPONENT
@@ -25,9 +27,18 @@ const Home = () => {
     dispatch(getOrders(id));
   }, []);
 
+  useEffect(() => {
+    dispatch(getProducts());
+  }, []);
+
   const orders = useSelector((state) => state.currentOrders);
   const { cart } = useSelector((state) => state);
+  // const totalCartItems =
+  //   cart.reduce((accum, currentEl) => {
+  //     return accum + currentEl.Order_Product.quantity;
+  //   }, 0) || 0;
   const isAdmin = useSelector((state) => state.auth.type === 'admin');
+  const { products } = useSelector((state) => state);
 
   return (
     <Container>
@@ -44,30 +55,47 @@ const Home = () => {
               </Card.Body>
               <ListGroup>
                 <ListGroup.Item>
-                  <Button
-                    variant="warning"
-                    onClick={() => {
-                      history.push('/admin');
-                    }}
-                  >
-                    Edit Inventory
-                  </Button>{' '}
-                  Add, remove, and edit items in the HoP inventory.
+                  <Row>
+                    <Col md="auto">
+                      <Button
+                        variant="warning"
+                        onClick={() => {
+                          history.push('/admin');
+                        }}
+                      >
+                        Edit Inventory
+                      </Button>{' '}
+                    </Col>
+                    <Col>
+                      Add, remove, and edit items in the HoP inventory.
+                      Currently: {products.length} different products in stock!.
+                    </Col>
+                  </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Button
-                    variant="warning"
-                    onClick={() => {
-                      history.push('/users');
-                    }}
-                  >
-                    View Users
-                  </Button>{' '}
-                  House of Plants currently has XX registered customers.
+                  <Row>
+                    <Col md="auto">
+                      <Button
+                        variant="warning"
+                        onClick={() => {
+                          history.push('/users');
+                        }}
+                      >
+                        View Users
+                      </Button>{' '}
+                    </Col>
+                    <Col>
+                      House of Plants currently has XX registered customers.
+                    </Col>
+                  </Row>
                 </ListGroup.Item>
                 <ListGroup.Item disabled>
-                  <Button variant="secondary">Order History</Button> There have
-                  been a total of YY completed orders.
+                  <Row>
+                    <Col md="auto">
+                      <Button variant="secondary">Order History</Button>
+                    </Col>
+                    <Col>There have been a total of YY completed orders.</Col>
+                  </Row>
                 </ListGroup.Item>
               </ListGroup>
             </Card>
@@ -75,6 +103,7 @@ const Home = () => {
         </Container>
       ) : (
         <Col lg={8}>
+          <br />
           <Card variant="success" border="success">
             <Card.Body>
               <Card.Title>Welcome, {username}</Card.Title>
@@ -100,7 +129,12 @@ const Home = () => {
                 >
                   View Cart
                 </Button>{' '}
-                Your cart currently contains {cart.length} unique items
+                Your cart currently contains{' '}
+                {cart.reduce((accum, currentEl) => {
+                  return accum + currentEl.Order_Product.quantity;
+                })}{' '}
+                total items
+                {/* {cart.length} unique items and{' '} */}
               </ListGroup.Item>
               <ListGroup.Item disabled>
                 <Button disabled variant="outline-secondary">
