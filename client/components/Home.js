@@ -11,6 +11,7 @@ import history from '../history';
 import { getCart, addToCart } from '../store/cart';
 import { getOrders } from '../store/orders';
 import { getProducts } from '../store/products';
+import { getUsers } from '../store/users';
 
 /**
  * COMPONENT
@@ -36,11 +37,20 @@ const Home = () => {
   const isAdmin = useSelector((state) => state.auth.type === 'admin');
   const { products } = useSelector((state) => state);
 
+  useEffect(() => {
+    if (isAdmin) dispatch(getUsers());
+  });
+
   let totalCartItems = 0;
   if (cart[0])
     totalCartItems = cart.reduce((accum, currentEl) => {
       return accum + currentEl.Order_Product.quantity;
     }, 0);
+
+  let users = [];
+  if (isAdmin) {
+    users = useSelector((state) => state.users);
+  }
 
   return (
     <Container>
@@ -86,9 +96,7 @@ const Home = () => {
                         View Users
                       </Button>{' '}
                     </Col>
-                    <Col>
-                      House of Plants currently has XX registered customers.
-                    </Col>
+                    <Col>View registered customers</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item disabled>
@@ -96,7 +104,7 @@ const Home = () => {
                     <Col md="auto">
                       <Button variant="secondary">Order History</Button>
                     </Col>
-                    <Col>There have been a total of YY completed orders.</Col>
+                    <Col>View a history of completed orders.</Col>
                   </Row>
                 </ListGroup.Item>
               </ListGroup>
