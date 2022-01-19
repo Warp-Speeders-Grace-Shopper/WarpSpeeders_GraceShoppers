@@ -7,11 +7,12 @@ import Alert from 'react-bootstrap/Alert';
  */
 export const Home = (props) => {
   const { username } = props;
+  let name = username ? username.split('@')[0] : username;
 
   return (
     <div>
       <Alert variant="primary" style={{ maxWidth: '25rem' }}>
-        <Alert.Heading>Logged in</Alert.Heading> <h3>Welcome, {username}</h3>
+        <Alert.Heading>Logged in</Alert.Heading> <h3>Welcome, {name}</h3>
         This is a React-bootstrap alert! If this is in a fancy blue box, it's
         working.
       </Alert>

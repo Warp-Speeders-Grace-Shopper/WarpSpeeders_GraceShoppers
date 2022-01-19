@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProduct } from '../store/singleProduct';
 import { useParams } from 'react-router-dom';
 import { addToCart } from '../store/cart';
+import { Card, Container, Row, Col } from 'react-bootstrap';
 
 export default function () {
   const dispatch = useDispatch();
@@ -14,11 +15,21 @@ export default function () {
   const userId = useSelector((state) => state.auth.id);
   // console.log(singleProduct);
   return (
-    <div>
-      <img src={singleProduct.imageUrl} style={{ maxWidth: '25rem' }} />
-      <p> {singleProduct.name}</p>
-      <p> {singleProduct.description}</p>
-      <p> ${(singleProduct.price)/100}</p>
+    <Container fluid>
+      <Row></Row>
+      <Card style={{ width: '35rem' }}>
+        <Card.Header>{singleProduct.name}</Card.Header>
+        <Card>
+          <Card.Img variant="left" src={singleProduct.imageUrl} />
+        </Card>
+        <Col>
+          <Card.Body>
+            <Card.Text>{singleProduct.description}</Card.Text>
+          </Card.Body>
+        </Col>
+      </Card>
+
+      <p> ${singleProduct.price / 100}</p>
       <button
         type="button"
         onClick={() => {
@@ -35,7 +46,7 @@ export default function () {
       >
         Add 5 to Cart
       </button>
-    </div>
+    </Container>
   );
   function addToCartHandler(productId, quantity = 1, userId = 0) {
     dispatch(addToCart(productId, quantity, userId));
