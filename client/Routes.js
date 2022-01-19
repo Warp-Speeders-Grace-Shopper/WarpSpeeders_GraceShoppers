@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { Login, Signup } from './components/AuthForm';
+import AuthForm from './components/AuthForm';
 import Home from './components/Home';
 import { me } from './store';
 import SingleProduct from './components/SingleProduct';
@@ -60,8 +60,12 @@ class Routes extends Component {
             <Route path="/apparel" exact component={Apparel} />
             <Route path="/products/:productId" component={SingleProduct} />
             <Route path="/" exact component={LandingPage} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
+            <Route path="/login">
+              <AuthForm formName="login" />{' '}
+            </Route>
+            <Route path="/signup">
+              <AuthForm formName="signup" />
+            </Route>
             <Route path="/cart" component={CartView} />
             <Route path="/thankYou" component={OrderThankYou} />
           </Switch>
