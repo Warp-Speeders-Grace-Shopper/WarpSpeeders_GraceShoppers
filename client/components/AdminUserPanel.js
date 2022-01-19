@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import { getUsers } from "../store/users";
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import { getUsers } from '../store/users';
 
 const AdminUserPanel = () => {
   const users = useSelector((state) => state.users);
@@ -30,8 +30,11 @@ const AdminUserPanel = () => {
                 </Row>
               );
             })}
+
     </Container>
-        ) : (<div>Loading</div>)
-}
+  ) : (
+    <div>Loading</div>
+  );
+};
 
 export default AdminUserPanel;

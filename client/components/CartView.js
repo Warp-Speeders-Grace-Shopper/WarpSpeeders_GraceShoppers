@@ -18,7 +18,12 @@ const CartView = () => {
   const [guestEmail, setGuestEmail] = useState("");
 
   const { id, username } = useSelector((state) => state.auth);
+
+  //grab user ID and username from state
+  let name = username ? username.split('@')[0] : username;
+
   const cart = useSelector((state) => state.cart);
+
 
   useEffect(() => {
     dispatch(getCart(id));
@@ -44,7 +49,7 @@ const CartView = () => {
     dispatch(clearCart(userId));
   }
 
-  function handleBuyCart(userId = 0, email = "") {
+  function handleBuyCart(userId = 0, email = " ") {
     dispatch(buyCart(userId, email));
     history.push("/thankYou");
   }
@@ -64,7 +69,9 @@ const CartView = () => {
       <Card.Body>
         <Row>
           <Col>
-            <h1>Cart for {username || "Guest"}</h1>
+
+            <h1>Cart for {name || 'Guest'}</h1>
+
           </Col>
 
           {cart[0] ? (
@@ -124,8 +131,11 @@ const CartView = () => {
                             <option value="3">3</option>
                             <option value="4">4</option>
                             <option value="5">5</option>
-                            <option value="5">10</option>
-                            <option value="5">25</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
                           </select>
                         </td>
                         <td>${cartItem.price / 100}</td>
@@ -193,16 +203,18 @@ const CartView = () => {
               {!id && !guestEmail && (
                 <div>Please enter email below to check out as guest!</div>
               )}
-              <form onSubmit={handleSubmitEmail}>
-                <label htmlFor="email">Email: </label>
-                <input
-                  type="text"
-                  name="email"
-                  value={emailInput}
-                  onChange={handleChangeEmail}
-                ></input>
-                <button type='submit'>Submit</button>
-              </form>
+              {!id && (
+                <form onSubmit={handleSubmitEmail}>
+                  <label htmlFor="email">Email: </label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={emailInput}
+                    onChange={handleChangeEmail}
+                  ></input>
+                  <button type="submit">Submit</button>
+                </form>
+              )}
             </Container>
           ) : (
             "Cart is empty. Buy some stuff!"
