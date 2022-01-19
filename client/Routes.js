@@ -15,6 +15,7 @@ import Plants from "./components/Plants";
 import Tools from "./components/Tools";
 import Apparel from "./components/Apparel";
 import Pots from "./components/Pots";
+import AdminUserPanel from './components/AdminUserPanel';
 
 /**
  * COMPONENT
@@ -45,6 +46,7 @@ class Routes extends Component {
             <Route path="/home" component={Home} />
             <Route path="/thankYou" component={OrderThankYou} />
             {isAdmin && <Route path="/admin" component={AdminProductPanel} />}
+            {isAdmin && <Route path="/users" component={AdminUserPanel} />}
             {isAdmin && (
               <Route path="/products/edit/:productId" component={EditProduct} />
             )}
