@@ -109,7 +109,7 @@ const AuthForm = ({ formName }) => {
               : null}
           </button>
         </div>
-        {error && error.response && <div> Enter valid username/password </div>}
+        {error && error.response && <div>{error.response.data}</div>}
       </form>
     </div>
   );
