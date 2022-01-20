@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addProduct } from "../store/products";
-import Container from "react-bootstrap/Container";
-import Accordion from "react-bootstrap/Accordion";
-import Form from "react-bootstrap/Form";
-import FormGroup from "react-bootstrap/FormGroup";
-import FormLabel from "react-bootstrap/FormLabel";
-import FormControl from "react-bootstrap/FormControl";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addProduct } from '../store/products';
+import Container from 'react-bootstrap/Container';
+import Accordion from 'react-bootstrap/Accordion';
+import Form from 'react-bootstrap/Form';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import FormControl from 'react-bootstrap/FormControl';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
 const AdminProductPanel = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    imageUrl: "",
-    type: "plant",
-    description: "",
+    name: '',
+    price: '',
+    imageUrl: '',
+    type: 'plant',
+    description: '',
   });
 
   const handleChange = (e) => {
@@ -31,14 +31,14 @@ const AdminProductPanel = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New item added: ", formData);
+    console.log('New item added: ', formData);
     dispatch(addProduct(formData));
     setFormData({
-      name: "",
-      price: "",
-      imageUrl: "",
-      type: "plant",
-      description: "",
+      name: '',
+      price: '',
+      imageUrl: '',
+      type: '',
+      description: '',
     });
   };
 
@@ -79,12 +79,7 @@ const AdminProductPanel = () => {
             </FormGroup>
             <Form.Group as={Row} controlId="formGridType">
               <Form.Label>Type</Form.Label>
-              <Form.Select
-                name="type"
-                defaultValue="plant"
-                onChange={handleChange}
-                value={type}
-              >
+              <Form.Select name="type" onChange={handleChange} value={type}>
                 <option value="plant">Plant</option>
                 <option value="pot">Pot</option>
                 <option value="tool">Tool</option>
