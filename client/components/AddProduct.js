@@ -23,7 +23,6 @@ const AdminProductPanel = () => {
   });
 
   const handleChange = (e) => {
-    console.log(formData);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -31,7 +30,10 @@ const AdminProductPanel = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('New item added: ', formData);
+    setFormData({
+      ...formData,
+      price: Number(formData.price),
+    });
     dispatch(addProduct(formData));
     setFormData({
       name: '',
@@ -79,7 +81,11 @@ const AdminProductPanel = () => {
             </FormGroup>
             <Form.Group as={Row} controlId="formGridType">
               <Form.Label>Type</Form.Label>
-              <Form.Select name="type" onChange={handleChange} value={type}>
+              <Form.Select
+                name="type"
+                onChange={handleChange}
+                value={type}
+              >
                 <option value="plant">Plant</option>
                 <option value="pot">Pot</option>
                 <option value="tool">Tool</option>

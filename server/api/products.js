@@ -33,7 +33,6 @@ router.post('/', requireToken, async (req, res, next) => {
     res.status(403).send('You must be an admin to update product inventory.');
   }
   try {
-    console.log('Adding product', req.body);
     res.status(201).send(await Product.create(req.body));
   } catch (error) {
     console.log(`error in the router.post route: ${error}`);
@@ -47,7 +46,6 @@ router.delete('/:productId', requireToken, async (req, res, next) => {
     res.status(403).send('You must be an admin to update product inventory.');
   }
   try {
-    console.log('Deleting product');
     const product = await Product.findByPk(req.params.productId);
     await product.destroy();
     res.send(product);

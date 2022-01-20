@@ -48,6 +48,10 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormData({
+      ...formData,
+      price: Number(formData.price),
+    });
     dispatch(editProduct(formData));
   };
 
