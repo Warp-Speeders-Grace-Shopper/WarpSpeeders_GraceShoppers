@@ -26,14 +26,14 @@ export default function () {
     dispatch(addToCart(productId, quantity, userId));
   }
   return (
-    <Container fluid sm>
+    <Container fluid className="sm">
       <Row>
         <Card.Header as="h2" className="text-center">
           {singleProduct.name}
         </Card.Header>
       </Row>
       <Stack gap={3} className="col-md-5 mx-auto">
-        <Card className="mb-20" maxw-50>
+        <Card className="mb-20 maxw-50">
           <Image
             variant="left"
             src={singleProduct.imageUrl}

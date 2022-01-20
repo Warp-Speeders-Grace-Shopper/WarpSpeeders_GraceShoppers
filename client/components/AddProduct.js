@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addProduct } from "../store/products";
-import Container from "react-bootstrap/Container";
-import Accordion from "react-bootstrap/Accordion";
-import Form from "react-bootstrap/Form";
-import FormGroup from "react-bootstrap/FormGroup";
-import FormLabel from "react-bootstrap/FormLabel";
-import FormControl from "react-bootstrap/FormControl";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addProduct } from '../store/products';
+import Container from 'react-bootstrap/Container';
+import Accordion from 'react-bootstrap/Accordion';
+import Form from 'react-bootstrap/Form';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import FormControl from 'react-bootstrap/FormControl';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
 const AdminProductPanel = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
-    imageUrl: "",
-    type: "plant",
-    description: "",
+    name: '',
+    price: '',
+    imageUrl: '',
+    type: 'plant',
+    description: '',
   });
 
   const handleChange = (e) => {
@@ -36,11 +36,11 @@ const AdminProductPanel = () => {
     });
     dispatch(addProduct(formData));
     setFormData({
-      name: "",
-      price: "",
-      imageUrl: "",
-      type: "plant",
-      description: "",
+      name: '',
+      price: '',
+      imageUrl: '',
+      type: '',
+      description: '',
     });
   };
 
@@ -83,7 +83,6 @@ const AdminProductPanel = () => {
               <Form.Label>Type</Form.Label>
               <Form.Select
                 name="type"
-                // defaultValue="plant"
                 onChange={handleChange}
                 value={type}
               >
