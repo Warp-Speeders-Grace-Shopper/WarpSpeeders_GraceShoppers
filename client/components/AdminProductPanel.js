@@ -35,7 +35,7 @@ const AdminProductPanel = () => {
                   />
                   <Card.Body>
                     <Card.Title>{product.name}</Card.Title>
-                    <Card.Text>${product.price}</Card.Text>
+                    <Card.Text>${product.price / 100}</Card.Text>
                     <Link to={`/products/edit/${product.id}`}>
                       <Button variant="primary">Edit</Button>
                     </Link>
