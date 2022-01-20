@@ -53,5 +53,11 @@ tr:nth-child(even) {
 }
 
 .singleProduct-img {
-  max-height: max-content;
+  height: 20rem;
+  width: 20rem;
+}
+
+.all-view-img {
+  height: 15rem;
+  width: 10rem;
 }
