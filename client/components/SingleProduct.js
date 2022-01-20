@@ -10,7 +10,6 @@ import {
   Col,
   Image,
   Container,
-  ButtonGroup,
   Button,
 } from 'react-bootstrap';
 
@@ -27,43 +26,45 @@ export default function () {
     dispatch(addToCart(productId, quantity, userId));
   }
   return (
-    <Container>
-      <Card.Header as="h2" className="text-center">
-        {singleProduct.name}
-      </Card.Header>
-      <Stack direction="horizontal">
-        <Col>
-          <img
-            className="singleProduct-img"
+    <Container fluid sm>
+      <Row>
+        <Card.Header as="h2" className="text-center">
+          {singleProduct.name}
+        </Card.Header>
+      </Row>
+      <Stack gap={3} className="col-md-5 mx-auto">
+        <Card className="mb-20" maxw-50>
+          <Image
             variant="left"
             src={singleProduct.imageUrl}
+            className="singleProduct-img rounded mx-auto d-block"
           />
-        </Col>
-
-        <Card className="mb-20">
           <Card.Text className="p-1 mb-20">
             {singleProduct.description}
           </Card.Text>
           <Card.Text>${singleProduct.price / 100} </Card.Text>
-          <Button
-            className="p-1 m-1 bg-Green"
-            type="button"
-            onClick={() => {
-              addToCartHandler(singleProduct.id, 1, userId);
-            }}
-          >
-            Add 1 to Cart
-          </Button>
-          <Button
-            className="p-1 m-1 bg-Green"
-            type="button"
-            onClick={() => {
-              addToCartHandler(singleProduct.id, 5, userId);
-            }}
-          >
-            Add 5 to Cart
-          </Button>
+          <Stack gap={2} className="col-md-5 mx-auto">
+            <Button
+              className="p-1 m-3 bg-Green"
+              type="button"
+              onClick={() => {
+                addToCartHandler(singleProduct.id, 1, userId);
+              }}
+            >
+              Add 1 to Cart
+            </Button>
+            <Button
+              className="p-1 m-3 bg-Green"
+              type="button"
+              onClick={() => {
+                addToCartHandler(singleProduct.id, 5, userId);
+              }}
+            >
+              Add 5 to Cart
+            </Button>
+          </Stack>
         </Card>
+        <Col></Col>
       </Stack>
     </Container>
   );
