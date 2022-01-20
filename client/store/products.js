@@ -53,7 +53,7 @@ export const addProduct = (product) => {
         method: 'post',
         url: '/api/products',
         headers: { authorization: token },
-        data: { product },
+        data: product,
       });
 
       dispatch(_addProduct(data));
@@ -83,11 +83,11 @@ export const editProduct = (product) => {
     try {
       const token = window.localStorage.getItem(TOKEN);
 
-      const { data } = await axios.put(`/api/products/${product.id}`, {
+      const { data } = await axios({
+        method: 'put',
+        url: `/api/products/${product.id}`,
         headers: { authorization: token },
-        data: {
-          product,
-        },
+        data: product,
       });
       dispatch(_editProduct(data));
     } catch (err) {
